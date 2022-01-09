@@ -63,10 +63,11 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
   const [user, setUser] = useState<any>(undefined);
+
   Auth.currentAuthenticatedUser()
     .then((data) => {
       setUser(data);
-      console.log("data", data);
+      console.log("there is users");
     })
     .catch((error) => {
       setUser(undefined);
@@ -143,7 +144,7 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
   const colorScheme = useColorScheme();
-
+  console.log("there is use");
   return (
     <BottomTab.Navigator
       initialRouteName="Home"

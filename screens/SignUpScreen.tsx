@@ -58,11 +58,16 @@ const SignupSchema = Yup.object().shape({
     .required("Required")
     .oneOf([Yup.ref("password")], "Passwords must match"),
 });
+const confirmationCode = Yup.object().shape({
+  code: Yup.string().required("Required"),
+});
 
 const SignUp = ({ navigation }: RootStackScreenProps<"SignUp">) => {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
+  const [isConfirmationCode, setIsConfirmationCode] = useState(false);
+  const [authRes, setAuthRes] = useState<any>();
 
   const createUserInBD = async (values: signUpVals) => {
     try {
@@ -104,186 +109,265 @@ const SignUp = ({ navigation }: RootStackScreenProps<"SignUp">) => {
       const { user } = await Auth.signUp(newCstmrToBeSavedOnCognito);
       // const createCstmrData = await user;
       console.log("cstmrData=>", user);
+      setAuthRes(user);
     } catch (error) {
       console.log("shit went south while getting customer =>", error);
+    }
+  };
+
+  const submitValidationCode = async (code: string) => {
+    console.log("validationcode ffuc invoked");
+    try {
+      const confrimRes = await Auth.confirmSignUp(authRes?.username, code);
+      console.log("confirmRes =>", confrimRes);
+    } catch (error) {
+      console.log(error);
+      return error;
     }
   };
 
   return (
     <>
       <View style={appStyles.container}>
-        <View style={appStyles.TitlTxtCntr}>
-          <Text style={appStyles.title}>Sign Up </Text>
-        </View>
-        <Formik
-          initialValues={signUpInitialState}
-          validationSchema={SignupSchema}
-          onSubmit={async (values) => {
-            try {
-              setSubmitting(true);
-              createUserInBD(values);
-              // createCredForCstmr(values);
-              setSubmitting(false);
-              setSuccess(true);
-            } catch (error) {
-              setSubmitting(false);
-              setError(true);
-            }
-          }}
-        >
-          {({
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            values,
-            errors,
-            touched,
-          }) => (
-            <>
-              <View
-                style={[
-                  appStyles.txtInputCntr,
-                  {
-                    borderColor:
-                      errors.firstName && touched.firstName ? "red" : "#ABC7E3",
-                  },
-                ]}
-              >
-                <TextInput
-                  placeholder={"First Name"}
-                  onChangeText={handleChange("firstName")}
-                  onBlur={handleBlur("firstName")}
-                  value={values.firstName}
-                  style={appStyles.txtInput}
-                />
-              </View>
-              <Text style={{ color: "red", width: "100%" }}>
-                {errors.firstName && touched.firstName && errors.firstName}
-              </Text>
+        {!isConfirmationCode && (
+          <Formik
+            initialValues={signUpInitialState}
+            validationSchema={SignupSchema}
+            onSubmit={async (values) => {
+              try {
+                setSubmitting(true);
+                createUserInBD(values);
+                // createCredForCstmr(values);
+                setSubmitting(false);
+                setIsConfirmationCode(true);
+                setSuccess(true);
+              } catch (error) {
+                setSubmitting(false);
+                setError(true);
+              }
+            }}
+          >
+            {({
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              values,
+              errors,
+              touched,
+            }) => (
+              <>
+                <View style={appStyles.TitlTxtCntr}>
+                  <Text style={appStyles.title}>Sign Up </Text>
+                </View>
+                <View
+                  style={[
+                    appStyles.txtInputCntr,
+                    {
+                      borderColor:
+                        errors.firstName && touched.firstName
+                          ? "red"
+                          : "#ABC7E3",
+                    },
+                  ]}
+                >
+                  <TextInput
+                    placeholder={"First Name"}
+                    onChangeText={handleChange("firstName")}
+                    onBlur={handleBlur("firstName")}
+                    value={values.firstName}
+                    style={appStyles.txtInput}
+                  />
+                </View>
+                <Text style={{ color: "red", width: "100%" }}>
+                  {errors.firstName && touched.firstName && errors.firstName}
+                </Text>
 
-              <View
-                style={[
-                  appStyles.txtInputCntr,
-                  {
-                    borderColor:
-                      errors.lastName && touched.lastName ? "red" : "#ABC7E3",
-                  },
-                ]}
-              >
-                <TextInput
-                  placeholder={"Last Name"}
-                  onChangeText={handleChange("lastName")}
-                  onBlur={handleBlur("lastName")}
-                  value={values.lastName}
-                  style={appStyles.txtInput}
-                />
-              </View>
-              <Text style={{ color: "red", width: "100%" }}>
-                {errors.lastName && touched.lastName && errors.lastName}
-              </Text>
+                <View
+                  style={[
+                    appStyles.txtInputCntr,
+                    {
+                      borderColor:
+                        errors.lastName && touched.lastName ? "red" : "#ABC7E3",
+                    },
+                  ]}
+                >
+                  <TextInput
+                    placeholder={"Last Name"}
+                    onChangeText={handleChange("lastName")}
+                    onBlur={handleBlur("lastName")}
+                    value={values.lastName}
+                    style={appStyles.txtInput}
+                  />
+                </View>
+                <Text style={{ color: "red", width: "100%" }}>
+                  {errors.lastName && touched.lastName && errors.lastName}
+                </Text>
 
-              <View
-                style={[
-                  appStyles.txtInputCntr,
-                  {
-                    borderColor:
-                      errors.email && touched.email ? "red" : "#ABC7E3",
-                  },
-                ]}
-              >
-                <TextInput
-                  placeholder={"Email"}
-                  onChangeText={handleChange("email")}
-                  onBlur={handleBlur("email")}
-                  value={values.email}
-                  style={appStyles.txtInput}
-                />
-              </View>
-              <Text style={{ color: "red", width: "100%" }}>
-                {errors.email && touched.email && errors.email}
-              </Text>
+                <View
+                  style={[
+                    appStyles.txtInputCntr,
+                    {
+                      borderColor:
+                        errors.email && touched.email ? "red" : "#ABC7E3",
+                    },
+                  ]}
+                >
+                  <TextInput
+                    placeholder={"Email"}
+                    onChangeText={handleChange("email")}
+                    onBlur={handleBlur("email")}
+                    value={values.email}
+                    style={appStyles.txtInput}
+                  />
+                </View>
+                <Text style={{ color: "red", width: "100%" }}>
+                  {errors.email && touched.email && errors.email}
+                </Text>
 
-              <View
-                style={[
-                  appStyles.txtInputCntr,
-                  {
-                    borderColor:
-                      errors.phoneNumber && touched.phoneNumber
-                        ? "red"
-                        : "#ABC7E3",
-                  },
-                ]}
-              >
-                <TextInput
-                  placeholder={"Phone Number"}
-                  onChangeText={handleChange("phoneNumber")}
-                  onBlur={handleBlur("phoneNumber")}
-                  value={values.phoneNumber}
-                  style={appStyles.txtInput}
-                />
-              </View>
-              <Text style={{ color: "red", width: "100%" }}>
-                {errors.phoneNumber &&
-                  touched.phoneNumber &&
-                  errors.phoneNumber}
-              </Text>
+                <View
+                  style={[
+                    appStyles.txtInputCntr,
+                    {
+                      borderColor:
+                        errors.phoneNumber && touched.phoneNumber
+                          ? "red"
+                          : "#ABC7E3",
+                    },
+                  ]}
+                >
+                  <TextInput
+                    placeholder={"Phone Number"}
+                    onChangeText={handleChange("phoneNumber")}
+                    onBlur={handleBlur("phoneNumber")}
+                    value={values.phoneNumber}
+                    style={appStyles.txtInput}
+                  />
+                </View>
+                <Text style={{ color: "red", width: "100%" }}>
+                  {errors.phoneNumber &&
+                    touched.phoneNumber &&
+                    errors.phoneNumber}
+                </Text>
 
-              <View
-                style={[
-                  appStyles.txtInputCntr,
-                  {
-                    borderColor:
-                      errors.password && touched.password ? "red" : "#ABC7E3",
-                  },
-                ]}
-              >
-                <TextInput
-                  placeholder={"Password"}
-                  onChangeText={handleChange("password")}
-                  onBlur={handleBlur("password")}
-                  value={values.password}
-                  style={appStyles.txtInput}
-                />
-              </View>
-              <Text style={{ color: "red", width: "100%" }}>
-                {errors.password && touched.password && errors.password}
-              </Text>
+                <View
+                  style={[
+                    appStyles.txtInputCntr,
+                    {
+                      borderColor:
+                        errors.password && touched.password ? "red" : "#ABC7E3",
+                    },
+                  ]}
+                >
+                  <TextInput
+                    placeholder={"Password"}
+                    onChangeText={handleChange("password")}
+                    onBlur={handleBlur("password")}
+                    value={values.password}
+                    style={appStyles.txtInput}
+                  />
+                </View>
+                <Text style={{ color: "red", width: "100%" }}>
+                  {errors.password && touched.password && errors.password}
+                </Text>
 
-              <View
-                style={[
-                  appStyles.txtInputCntr,
-                  {
-                    borderColor:
-                      errors.confirmPassword && touched.confirmPassword
-                        ? "red"
-                        : "#ABC7E3",
-                  },
-                ]}
-              >
-                <TextInput
-                  placeholder={"Confirm password "}
-                  onChangeText={handleChange("confirmPassword")}
-                  onBlur={handleBlur("confirmPassword")}
-                  value={values.confirmPassword}
-                  style={appStyles.txtInput}
-                />
-              </View>
-              <Text style={{ color: "red", width: "100%" }}>
-                {errors.confirmPassword &&
-                  touched.confirmPassword &&
-                  errors.confirmPassword}
-              </Text>
+                <View
+                  style={[
+                    appStyles.txtInputCntr,
+                    {
+                      borderColor:
+                        errors.confirmPassword && touched.confirmPassword
+                          ? "red"
+                          : "#ABC7E3",
+                    },
+                  ]}
+                >
+                  <TextInput
+                    placeholder={"Confirm password "}
+                    onChangeText={handleChange("confirmPassword")}
+                    onBlur={handleBlur("confirmPassword")}
+                    value={values.confirmPassword}
+                    style={appStyles.txtInput}
+                  />
+                </View>
+                <Text style={{ color: "red", width: "100%" }}>
+                  {errors.confirmPassword &&
+                    touched.confirmPassword &&
+                    errors.confirmPassword}
+                </Text>
 
-              <TouchableOpacity
-                onPress={() => handleSubmit()}
-                style={appStyles.btnCntr}
-              >
-                <Text style={appStyles.btnTxt}>SignUp</Text>
-              </TouchableOpacity>
-            </>
-          )}
-        </Formik>
+                <TouchableOpacity
+                  onPress={() => handleSubmit()}
+                  style={appStyles.btnCntr}
+                >
+                  <Text style={appStyles.btnTxt}>SignUp</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </Formik>
+        )}
+        {isConfirmationCode && (
+          <Formik
+            initialValues={{ code: "" }}
+            validationSchema={confirmationCode}
+            onSubmit={async (values) => {
+              console.log("onSubmitFunc Invoked");
+              try {
+                setSubmitting(true);
 
+                submitValidationCode(values.code);
+                // setSubmitting(false);
+                setSuccess(true);
+              } catch (error) {
+                setSubmitting(false);
+                setError(true);
+              }
+            }}
+          >
+            {({
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              values,
+              errors,
+              touched,
+            }) => (
+              <>
+                <View style={appStyles.TitlTxtCntr}>
+                  <Text style={appStyles.title}>Enter Confirmation Code </Text>
+                </View>
+                <View
+                  style={[
+                    appStyles.txtInputCntr,
+                    {
+                      borderColor:
+                        errors.code && touched.code ? "red" : "#ABC7E3",
+                    },
+                  ]}
+                >
+                  <TextInput
+                    placeholder={"Confirmation code"}
+                    onChangeText={handleChange("code")}
+                    onBlur={handleBlur("code")}
+                    value={values.code}
+                    style={appStyles.txtInput}
+                  />
+                </View>
+                <Text style={{ color: "red", width: "100%" }}>
+                  {errors.code && touched.code && errors.code}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    console.log("onpress invoked");
+                    handleSubmit();
+                  }}
+                  style={appStyles.btnCntr}
+                >
+                  <Text style={appStyles.btnTxt}>Confrim Code</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </Formik>
+        )}
         <View style={appStyles.signInBtnCntr}>
           <TouchableOpacity onPress={() => navigation.replace("SignIn")}>
             <Text style={appStyles.linkText}>SignIn instead</Text>
