@@ -9,6 +9,7 @@ import {
   NavigationContainer,
   DefaultTheme,
   DarkTheme,
+  useRoute,
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
@@ -16,9 +17,6 @@ import { ColorSchemeName, Pressable } from "react-native";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
-import ModalScreen from "../screens/ModalScreen";
-import NotFoundScreen from "../screens/SignInScreen";
-import TabTwoScreen from "../screens/AppointmentsScreen";
 import {
   RootStackParamList,
   RootTabParamList,
@@ -35,22 +33,56 @@ import SettingsScreen from "../screens/SettingsScreen";
 import AssemblingFurnitureScreen from "../screens/AssemblingFurnitureScreen";
 import MovingScreen from "../screens/MovingScreen";
 import PickLocationScreen from "../screens/PickLocationScreen";
-import { Auth } from "aws-amplify";
+import { Auth, Hub } from "aws-amplify";
 import { useState } from "react";
 import SignIn from "../screens/SignInScreen";
 import SignUp from "../screens/SignUpScreen";
+import { useEffect } from "react";
+import { HubCallback } from "@aws-amplify/core/lib/Hub";
 
 export default function Navigation({
   colorScheme,
 }: {
   colorScheme: ColorSchemeName;
 }) {
+  const [user, setUser] = useState<any>(undefined);
+
+  const authListener: HubCallback = async ({ payload: { event, data } }) => {
+    switch (event) {
+      case "signIn":
+        setUser(data);
+        break;
+      case "signOut":
+        setUser(undefined);
+        break;
+    }
+  };
+
+  useEffect(() => {
+    const abortController = new AbortController();
+
+    Hub.listen("auth", authListener);
+
+    Auth.currentAuthenticatedUser()
+      .then((data) => {
+        setUser(data);
+      })
+      .catch((error) => {
+        setUser(undefined);
+        console.log("error", error);
+      });
+    return () => {
+      Hub.remove("auth", authListener);
+      abortController.abort();
+    };
+  }, []);
+
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
       theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
     >
-      <RootNavigator />
+      {user ? <RootNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
 }
@@ -62,76 +94,43 @@ export default function Navigation({
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
-  const [user, setUser] = useState<any>(undefined);
-
-  Auth.currentAuthenticatedUser()
-    .then((data) => {
-      setUser(data);
-      console.log("there is users");
-    })
-    .catch((error) => {
-      setUser(undefined);
-      console.log("error", error);
-    });
   return (
     <Stack.Navigator>
-      {user ? (
-        <>
-          <Stack.Screen
-            name="Root"
-            component={BottomTabNavigator}
-            options={{ headerShown: false }}
-          />
-          <Stack.Group>
-            <Stack.Screen
-              name="AssemblingFurniture"
-              options={() => ({
-                headerShown: true,
-                title: "Assembling Furniture",
-              })}
-              component={AssemblingFurnitureScreen}
-            />
+      <Stack.Screen
+        name="Root"
+        component={BottomTabNavigator}
+        options={{ headerShown: false }}
+      />
+      <Stack.Group>
+        <Stack.Screen
+          name="AssemblingFurniture"
+          options={() => ({
+            headerShown: true,
+            title: "Assembling Furniture",
+          })}
+          component={AssemblingFurnitureScreen}
+        />
 
-            <Stack.Screen
-              name="PickLocation"
-              options={() => ({
-                headerShown: false,
-                // title: "Pick your locaiton",
-              })}
-              component={PickLocationScreen}
-            />
-            <Stack.Screen
-              name="Moving"
-              options={() => ({
-                headerShown: true,
-                title: "Moving in/out",
+        <Stack.Screen
+          name="PickLocation"
+          options={() => ({
+            headerShown: false,
+            // title: "Pick your locaiton",
+          })}
+          component={PickLocationScreen}
+        />
+        <Stack.Screen
+          name="Moving"
+          options={() => ({
+            headerShown: true,
+            title: "Moving in/out",
 
-                // title: "Enter your Bid",
-                // headerBackTitle: "Inventory",
-              })}
-              component={MovingScreen}
-            />
-          </Stack.Group>
-        </>
-      ) : (
-        <>
-          <Stack.Screen
-            name="SignIn"
-            component={SignIn}
-            options={{ title: "SignIn", headerShown: false }}
-          />
-          <Stack.Group
-          //  screenOptions={{ presentation: "" }}
-          >
-            {/* <Stack.Screen name="SignIn" component={ModalScreen} /> */}
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="SignUp"
-              component={SignUp}
-            />
-          </Stack.Group>
-        </>
-      )}
+            // title: "Enter your Bid",
+            // headerBackTitle: "Inventory",
+          })}
+          component={MovingScreen}
+        />
+      </Stack.Group>
     </Stack.Navigator>
   );
 };
@@ -199,7 +198,7 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Notifications"
-        component={TabTwoScreen}
+        component={SettingsScreen}
         options={{
           title: "Notifications",
           tabBarIcon: ({ color }) => (
@@ -220,6 +219,28 @@ function BottomTabNavigator() {
     </BottomTab.Navigator>
   );
 }
+
+const AuthNavigator = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="SignIn"
+        component={SignIn}
+        options={{ title: "SignIn", headerShown: false }}
+      />
+      <Stack.Group
+      //  screenOptions={{ presentation: "" }}
+      >
+        {/* <Stack.Screen name="SignIn" component={ModalScreen} /> */}
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="SignUp"
+          component={SignUp}
+        />
+      </Stack.Group>
+    </Stack.Navigator>
+  );
+};
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/

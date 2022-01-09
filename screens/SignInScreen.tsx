@@ -28,6 +28,7 @@ const SigninSchema = Yup.object().shape({
 });
 
 const SignIn = ({ navigation }: RootStackScreenProps<"SignIn">) => {
+  const [error, setError] = useState<string | undefined>(undefined);
   return (
     <View style={appStyles.container}>
       <View style={appStyles.TitlTxtCntr}>
@@ -46,6 +47,7 @@ const SignIn = ({ navigation }: RootStackScreenProps<"SignIn">) => {
             console.log("signInRes =>", signInRes);
           } catch (error) {
             console.log("shit went south signing in =>", error);
+            setError(error?.message);
           }
         }}
       >
@@ -100,6 +102,7 @@ const SignIn = ({ navigation }: RootStackScreenProps<"SignIn">) => {
               {errors.password && touched.password && errors.password}
             </Text>
 
+            <Text style={{ color: "red", width: "100%" }}>{error}</Text>
             <TouchableOpacity
               onPress={() => handleSubmit()}
               style={appStyles.btnCntr}

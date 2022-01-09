@@ -20,30 +20,30 @@ const linking: LinkingOptions<RootStackParamList> = {
               HomeScreen: "one",
             },
           },
-          // Appointments: {
-          //   screens: {
-          //     TabTwoScreen: "two",
-          //   },
-          // },
-          // Offers: {
-          //   screens: {
-          //     TabTwoScreen: "two",
-          //   },
-          // },
-          // Notifications: {
-          //   screens: {
-          //     TabTwoScreen: "two",
-          //   },
-          // },
-          // Settings: {
-          //   screens: {
-          //     TabTwoScreen: "two",
-          //   },
-          // },
+          Appointments: {
+            screens: {
+              TabTwoScreen: "two",
+            },
+          },
+          Offers: {
+            screens: {
+              TabTwoScreen: "two",
+            },
+          },
+          Notifications: {
+            screens: {
+              TabTwoScreen: "two",
+            },
+          },
+          Settings: {
+            screens: {
+              TabTwoScreen: "two",
+            },
+          },
         },
       },
-      Modal: "modal",
-      NotFound: "*",
+      // Modal: "modal",
+      // NotFound: "*",
     },
   },
 };
