@@ -16,16 +16,16 @@ const HomeScreen = ({ navigation }: RootTabScreenProps<"Home">) => {
 
   const getCustomer = async () => {
     let cstmrRes: any;
-    try {
-      cstmrRes = API.graphql({
-        query: customerById,
-        variables: { customerId: "fd4b2d4f-aee1-4c4d-9be6-13f3fc0e3b3a" },
-      });
-      const cstmrData = await cstmrRes;
-      console.log("cstmrData=>", cstmrData);
-    } catch (error) {
-      console.log("shit went south while getting customer =>", error);
-    }
+    // try {
+    //   cstmrRes = API.graphql({
+    //     query: customerById,
+    //     variables: { customerId: "fd4b2d4f-aee1-4c4d-9be6-13f3fc0e3b3a" },
+    //   });
+    //   const cstmrData = await cstmrRes;
+    //   console.log("cstmrData=>", cstmrData);
+    // } catch (error) {
+    //   console.log("shit went south while getting customer =>", error);
+    // }
     // console.log("customer Res =>", cstmrRes);
   };
   useEffect(() => {

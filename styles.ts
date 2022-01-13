@@ -16,6 +16,7 @@ export const appStyles = StyleSheet.create({
   title: {
     fontSize: 30,
     fontWeight: "bold",
+    color: "#0C4160",
   },
   btnCntr: {
     marginTop: 15,

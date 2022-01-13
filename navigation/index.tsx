@@ -39,6 +39,7 @@ import SignIn from "../screens/SignInScreen";
 import SignUp from "../screens/SignUpScreen";
 import { useEffect } from "react";
 import { HubCallback } from "@aws-amplify/core/lib/Hub";
+import JobConfirmationScreen from "../screens/JobConfirmationScreen";
 
 export default function Navigation({
   colorScheme,
@@ -118,6 +119,14 @@ const RootNavigator = () => {
             // title: "Pick your locaiton",
           })}
           component={PickLocationScreen}
+        />
+        <Stack.Screen
+          name="JobConfirmation"
+          options={() => ({
+            headerShown: true,
+            title: "Confirmation",
+          })}
+          component={JobConfirmationScreen}
         />
         <Stack.Screen
           name="Moving"

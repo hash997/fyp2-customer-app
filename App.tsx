@@ -7,7 +7,7 @@ import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
 import awsmobile from "./src/aws-exports";
-import { CurrentInquiryProvider } from "./state-store/current-inquiry-state";
+import { JobRequestProvider } from "./state-store/job-request-state";
 Amplify.configure(awsmobile);
 
 export default function App() {
@@ -18,12 +18,12 @@ export default function App() {
     return null;
   } else {
     return (
-      <CurrentInquiryProvider>
-        <SafeAreaProvider>
+      <SafeAreaProvider>
+        <JobRequestProvider>
           <Navigation colorScheme={colorScheme} />
-          <StatusBar />
-        </SafeAreaProvider>
-      </CurrentInquiryProvider>
+        </JobRequestProvider>
+        <StatusBar />
+      </SafeAreaProvider>
     );
   }
 }

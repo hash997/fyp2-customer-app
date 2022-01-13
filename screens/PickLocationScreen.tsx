@@ -11,6 +11,7 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import * as Location from "expo-location";
 import * as Progress from "react-native-progress";
 import { MaterialIcons } from "@expo/vector-icons";
+import { AssemblingFurniture, RootTabScreenProps } from "../types";
 
 const apiKey = "AIzaSyDJHF_JXu4QD7YeJCRgyRp-Yqez7JLR29A";
 
@@ -24,9 +25,11 @@ interface LocationInfo {
   city: string;
   state: string;
   country: string;
+  lng: string;
+  lat: string;
 }
 
-const PickLoc = () => {
+const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
   const [errorMsg, setErrorMsg] = useState<string | undefined>();
   const [lngLat, setLngLat] = useState<LngLtd | undefined>();
   const [isLoading, setIsLoading] = useState(false);
@@ -89,6 +92,12 @@ const PickLoc = () => {
 
   const getAddressCityCountry = (jsonRes: any) => {
     let city, state, country;
+    const lat = jsonRes?.results[0].geometry.location.lat;
+    const lng = jsonRes?.results[0].geometry.location.lng;
+    console.log("=================================");
+
+    // console.log("jsonRes = > ", jsonRes?.results[0].geometry.location.lat);
+    console.log("=================================");
 
     const address = jsonRes?.results[0]?.formatted_address;
     for (let i = 0; i < jsonRes?.results[0]?.address_components.length; i++) {
@@ -115,12 +124,42 @@ const PickLoc = () => {
       city: city,
       state: state,
       country: country,
+      lat: lat,
+      lng: lng,
     });
   };
+
+  console.log("place info =>", placeInfo);
 
   return (
     <View style={styles.container}>
       <View style={styles.inptCtn}>
+        <View
+          style={{
+            position: "relative",
+            width: "15%",
+            borderRadius: 5,
+            backgroundColor: "white",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: 44,
+            marginRight: 5,
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("AssemblingFurniture");
+            }}
+          >
+            <MaterialIcons
+              name="chevron-left"
+              size={35}
+              color="black"
+              style={{ opacity: 0.7 }}
+            />
+          </TouchableOpacity>
+        </View>
         <GooglePlacesAutocomplete
           placeholder="Search"
           onPress={(data, details = null) => {
@@ -147,7 +186,7 @@ const PickLoc = () => {
             style={{
               // position: "relative",
               height: 70,
-              backgroundColor: isLoading ? "grey" : "#8eb0bc",
+              backgroundColor: isLoading ? "grey" : "#0C4160",
               borderRadius: 10,
               display: "flex",
               justifyContent: "center",
@@ -168,7 +207,9 @@ const PickLoc = () => {
         <View style={styles.btnCtn}>
           <TouchableOpacity
             disabled={!placeInfo?.address}
-            onPress={getCurretnLoc}
+            onPress={() => {
+              navigation.navigate("JobConfirmation");
+            }}
             style={[
               styles.btn,
               { backgroundColor: !placeInfo?.address ? "grey" : "#0C4160" },
@@ -273,8 +314,12 @@ const styles = StyleSheet.create({
   },
   inptCtn: {
     position: "absolute",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
     top: 70,
     zIndex: 100,
+    right: 20,
     width: "100%",
     // height: 100,
   },

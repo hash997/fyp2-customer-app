@@ -22,7 +22,9 @@ export type RootStackParamList = {
   SignIn: undefined;
   SignUp: undefined;
   AssemblingFurniture: NavigatorScreenParams<RootTabParamList> | undefined;
+  JobConfirmation: undefined;
   PickLocation: undefined;
+
   Moving: undefined;
 };
 
@@ -36,8 +38,13 @@ export type RootTabParamList = {
   Assembly: undefined;
   Notifications: undefined;
   Settings: undefined;
+  PickLocation: undefined;
 };
 
+export type AssemblingFurniture = {
+  PickLocation: undefined;
+  JobConfirmation: undefined;
+};
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
   CompositeScreenProps<
     BottomTabScreenProps<RootTabParamList, Screen>,

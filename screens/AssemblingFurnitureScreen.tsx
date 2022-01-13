@@ -9,39 +9,46 @@ import {
   Button,
 } from "react-native";
 import {
-  useCurrentInquiry,
-  useDispatchCurrentInquiry,
-} from "../state-store/current-inquiry-state";
+  useJobRequest,
+  useDispatchJobRequest,
+} from "../state-store/job-request-state";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const items = [1, 2, 3, 4];
 const furnitureArr = ["Desk or Table", "Bed Frame", "Chair", "Other"];
 
 const AssemblingFurnitureScreen = (props: any) => {
-  const currentInquiry = useCurrentInquiry();
-  const dispatchCurrentInquiry = useDispatchCurrentInquiry();
+  const currentJobRequest = useJobRequest();
+  const dispatchCurrentInquiry = useDispatchJobRequest();
 
   const [noOfItems, setNoOfItems] = useState(0);
   const [selectedFurniture, setSelectedFurniture] =
     useState<number | undefined>();
+  const [furniture, setFurniture] = useState<string>("");
+  const [otherFur, setOtherFur] = useState<string[]>([]);
   const [selectedItem, setSelectedItem] =
     useState<number | undefined>(undefined);
   const [isUrgent, setIsUrgent] = useState<string | undefined>();
 
-  useEffect(() => {}, [currentInquiry]);
+  useEffect(() => {}, [currentJobRequest]);
   useEffect(() => {
+    // dispatchCurrentInquiry({
+    //   type: "clear",
+    // });
     dispatchCurrentInquiry({
       type: "update",
       payload: {
-        ...currentInquiry,
+        ...currentJobRequest,
         currentStep: 1,
       },
     });
   }, []);
 
+  console.log("length of other furn => ", currentJobRequest);
   return (
     <View style={styles.container}>
       <View style={{ marginTop: "30%" }}>
-        {currentInquiry.currentStep === 1 ? (
+        {currentJobRequest.currentStep === 1 && (
           <>
             <Text style={styles.title}>How many Items need assembly?</Text>
             {items.map((item, i) => {
@@ -53,6 +60,7 @@ const AssemblingFurnitureScreen = (props: any) => {
                     { borderColor: selectedItem === i ? "darkblue" : "#eee" },
                   ]}
                   onPress={() => {
+                    console.log("i =>", i);
                     setSelectedItem(i);
                     setNoOfItems(i + 1);
                   }}
@@ -61,22 +69,50 @@ const AssemblingFurnitureScreen = (props: any) => {
                 </Pressable>
               );
             })}
-            {noOfItems > 3 ? (
+            {noOfItems > 3 && (
               <TextInput
-                style={styles.box}
+                style={[styles.txtInpt, { width: "100%" }]}
                 placeholder="How many Items"
                 keyboardType="numeric"
                 onChangeText={(value) => {
                   const val = +value;
-                  if (val < 3) return;
+                  console.log("fucking val =>", val);
+                  if (val < 3) {
+                    setNoOfItems(val - 1);
+                    setSelectedItem(val - 1);
+                    return;
+                  }
                   setNoOfItems(+value);
                 }}
               />
-            ) : undefined}
+            )}
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => {
+                if (currentJobRequest.currentStep === 3) {
+                  props.navigation.navigate("PickLocation");
+                  return;
+                }
+                setNoOfItems(0);
+                dispatchCurrentInquiry({
+                  type: "update",
+                  payload: {
+                    ...currentJobRequest,
+                    currentStep: currentJobRequest.currentStep + 1,
+                    job: {
+                      ...currentJobRequest.job,
+                      numberOfItem: noOfItems,
+                    },
+                  },
+                });
+              }}
+            >
+              <Text style={styles.btnTxt}>Continue</Text>
+            </TouchableOpacity>
           </>
-        ) : undefined}
+        )}
 
-        {currentInquiry.currentStep === 2 ? (
+        {currentJobRequest.currentStep === 2 && (
           <>
             <Text style={styles.title}>
               What kind of furniture would like assembled?
@@ -102,21 +138,82 @@ const AssemblingFurnitureScreen = (props: any) => {
                 </Pressable>
               );
             })}
-            {noOfItems > 3 ? (
-              <TextInput
-                style={styles.box}
-                placeholder="please specify what furniture..."
-                onChangeText={(value) => {
-                  const val = +value;
-                  if (val < 3) return;
-                  setNoOfItems(+value);
-                }}
-              />
-            ) : undefined}
+            {noOfItems > 3 && (
+              <>
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <TextInput
+                    style={styles.txtInpt}
+                    placeholder="please specify what furniture..."
+                    value={furniture}
+                    onChangeText={(value) => {
+                      setFurniture(value);
+                    }}
+                  />
+                  <TouchableOpacity
+                    style={[
+                      styles.txtInptBtn,
+                      {
+                        opacity:
+                          otherFur &&
+                          otherFur.length === currentJobRequest.job.numberOfItem
+                            ? 0.5
+                            : 1,
+                      },
+                    ]}
+                    disabled={
+                      otherFur &&
+                      otherFur.length === currentJobRequest.job.numberOfItem
+                    }
+                    onPress={() => {
+                      if (
+                        (otherFur &&
+                          otherFur.length ===
+                            currentJobRequest.job.numberOfItem) ||
+                        furniture.length == 0
+                      )
+                        return;
+                      setOtherFur((prev) => [...prev, furniture]);
+                      setFurniture("");
+                    }}
+                  >
+                    <MaterialIcons name="add" size={24} color="white" />
+                  </TouchableOpacity>
+                </View>
+              </>
+            )}
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => {
+                if (currentJobRequest.currentStep === 3) {
+                  props.navigation.navigate("PickLocation");
+                  return;
+                }
+                setNoOfItems(0);
+                dispatchCurrentInquiry({
+                  type: "update",
+                  payload: {
+                    ...currentJobRequest,
+                    currentStep: currentJobRequest.currentStep + 1,
+                    job: {
+                      ...currentJobRequest.job,
+                      items: otherFur,
+                    },
+                  },
+                });
+              }}
+            >
+              <Text style={styles.btnTxt}>Continue</Text>
+            </TouchableOpacity>
           </>
-        ) : undefined}
+        )}
 
-        {currentInquiry.currentStep === 3 ? (
+        {currentJobRequest.currentStep === 3 && (
           <>
             <Text style={styles.title}>Booking Type</Text>
 
@@ -158,36 +255,28 @@ const AssemblingFurnitureScreen = (props: any) => {
                 in your city, and allows you to choose the one.
               </Text>
             </Pressable>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => {
+                if (currentJobRequest.currentStep === 3) {
+                  props.navigation.navigate("PickLocation");
+                  return;
+                }
+              }}
+            >
+              <Text style={styles.btnTxt}>Continue</Text>
+            </TouchableOpacity>
           </>
-        ) : undefined}
+        )}
 
-        <TouchableOpacity
-          style={styles.btn}
-          onPress={() => {
-            if (currentInquiry.currentStep === 3) {
-              props.navigation.navigate("PickLocation");
-              return;
-            }
-            setNoOfItems(0);
-            dispatchCurrentInquiry({
-              type: "update",
-              payload: {
-                ...currentInquiry,
-                currentStep: currentInquiry.currentStep + 1,
-              },
-            });
-          }}
-        >
-          <Text style={styles.btnTxt}>Continue</Text>
-        </TouchableOpacity>
         <TouchableOpacity
           style={[styles.btn, { backgroundColor: "grey" }]}
           onPress={() => {
             dispatchCurrentInquiry({
               type: "update",
               payload: {
-                ...currentInquiry,
-                currentStep: currentInquiry.currentStep - 1,
+                ...currentJobRequest,
+                currentStep: currentJobRequest.currentStep - 1,
               },
             });
           }}
@@ -248,6 +337,29 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: "#0C4160",
     opacity: 0.6,
+  },
+  txtInpt: {
+    marginVertical: 5,
+    width: "80%",
+    height: 50,
+    borderWidth: 2,
+    borderColor: "#eee",
+    borderRadius: 10,
+    display: "flex",
+    justifyContent: "center",
+    paddingHorizontal: 20,
+  },
+  txtInptBtn: {
+    marginVertical: 5,
+    width: "17%",
+    height: 50,
+    // borderWidth: 2,
+    // borderColor: "#eee",
+    borderRadius: 10,
+    display: "flex",
+    justifyContent: "center",
+    paddingHorizontal: 20,
+    backgroundColor: "#0C4160",
   },
 });
 
