@@ -22,12 +22,14 @@ const AssemblingFurnitureScreen = (props: any) => {
   const dispatchCurrentInquiry = useDispatchJobRequest();
 
   const [noOfItems, setNoOfItems] = useState(0);
-  const [selectedFurniture, setSelectedFurniture] =
-    useState<number | undefined>();
+  const [selectedFurniture, setSelectedFurniture] = useState<
+    number | undefined
+  >();
   const [furniture, setFurniture] = useState<string>("");
   const [otherFur, setOtherFur] = useState<string[]>([]);
-  const [selectedItem, setSelectedItem] =
-    useState<number | undefined>(undefined);
+  const [selectedItem, setSelectedItem] = useState<number | undefined>(
+    undefined
+  );
   const [isUrgent, setIsUrgent] = useState<string | undefined>();
 
   useEffect(() => {}, [currentJobRequest]);
@@ -190,6 +192,7 @@ const AssemblingFurnitureScreen = (props: any) => {
             <TouchableOpacity
               style={styles.btn}
               onPress={() => {
+                if (selectedFurniture === undefined) return;
                 if (currentJobRequest.currentStep === 3) {
                   props.navigation.navigate("PickLocation");
                   return;
@@ -202,7 +205,10 @@ const AssemblingFurnitureScreen = (props: any) => {
                     currentStep: currentJobRequest.currentStep + 1,
                     job: {
                       ...currentJobRequest.job,
-                      items: otherFur,
+                      items:
+                        otherFur.length > 0
+                          ? otherFur
+                          : [furnitureArr[selectedFurniture]],
                     },
                   },
                 });

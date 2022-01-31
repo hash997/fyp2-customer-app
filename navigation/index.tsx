@@ -40,6 +40,7 @@ import SignUp from "../screens/SignUpScreen";
 import { useEffect } from "react";
 import { HubCallback } from "@aws-amplify/core/lib/Hub";
 import JobConfirmationScreen from "../screens/JobConfirmationScreen";
+import LandingScreen from "../screens/LandingScreen";
 
 export default function Navigation({
   colorScheme,
@@ -83,7 +84,7 @@ export default function Navigation({
       linking={LinkingConfiguration}
       theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
     >
-      {user ? <RootNavigator /> : <AuthNavigator />}
+      <RootNavigator />
     </NavigationContainer>
   );
 }
@@ -97,6 +98,11 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const RootNavigator = () => {
   return (
     <Stack.Navigator>
+      <Stack.Screen
+        name="Landing"
+        component={LandingScreen}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="Root"
         component={BottomTabNavigator}
@@ -138,6 +144,22 @@ const RootNavigator = () => {
             // headerBackTitle: "Inventory",
           })}
           component={MovingScreen}
+        />
+      </Stack.Group>
+
+      <Stack.Screen
+        name="SignIn"
+        component={SignIn}
+        options={{ title: "SignIn", headerShown: false }}
+      />
+      <Stack.Group
+      //  screenOptions={{ presentation: "" }}
+      >
+        {/* <Stack.Screen name="SignIn" component={ModalScreen} /> */}
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="SignUp"
+          component={SignUp}
         />
       </Stack.Group>
     </Stack.Navigator>
@@ -232,6 +254,11 @@ function BottomTabNavigator() {
 const AuthNavigator = () => {
   return (
     <Stack.Navigator>
+      <Stack.Screen
+        name="Landing"
+        component={LandingScreen}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="SignIn"
         component={SignIn}

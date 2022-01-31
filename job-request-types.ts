@@ -2,6 +2,9 @@ export interface JobRequestState {
   job: JobRequest;
   currentStep: number;
 }
+export interface AuthState {
+  user: any;
+}
 
 export interface JobRequest {
   numberOfItem: number;

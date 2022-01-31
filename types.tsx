@@ -21,6 +21,7 @@ export type RootStackParamList = {
   Modal: undefined;
   SignIn: undefined;
   SignUp: undefined;
+  Landing: undefined;
   AssemblingFurniture: NavigatorScreenParams<RootTabParamList> | undefined;
   JobConfirmation: undefined;
   PickLocation: undefined;

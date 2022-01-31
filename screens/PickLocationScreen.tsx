@@ -12,6 +12,11 @@ import * as Location from "expo-location";
 import * as Progress from "react-native-progress";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AssemblingFurniture, RootTabScreenProps } from "../types";
+import {
+  useDispatchJobRequest,
+  useJobRequest,
+} from "../state-store/job-request-state";
+import { useAuth } from "../state-store/auth-state";
 
 const apiKey = "AIzaSyDJHF_JXu4QD7YeJCRgyRp-Yqez7JLR29A";
 
@@ -34,6 +39,9 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
   const [lngLat, setLngLat] = useState<LngLtd | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const [placeInfo, setPlaceInfo] = useState<LocationInfo>();
+  const currentJobRequest = useJobRequest();
+  const dispatchCurrentJobRequest = useDispatchJobRequest();
+  const { user } = useAuth();
 
   // THIS FUNCTION IS USED TO ASK THE USER FOR PREMISSION TO GET LOCATION AND THEN GET'S THE LOCATION
   // THIS WILL GIVE THE LAT AND LNG AND SOME OTHER INFO.
@@ -94,6 +102,7 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
     let city, state, country;
     const lat = jsonRes?.results[0].geometry.location.lat;
     const lng = jsonRes?.results[0].geometry.location.lng;
+
     console.log("=================================");
 
     // console.log("jsonRes = > ", jsonRes?.results[0].geometry.location.lat);
@@ -208,6 +217,25 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
           <TouchableOpacity
             disabled={!placeInfo?.address}
             onPress={() => {
+              if (!placeInfo) return;
+              dispatchCurrentJobRequest({
+                type: "update",
+                payload: {
+                  ...currentJobRequest,
+                  currentStep: currentJobRequest.currentStep + 1,
+                  job: {
+                    ...currentJobRequest.job,
+                    location: {
+                      address: placeInfo.address,
+                      city: placeInfo.city,
+                      lat: placeInfo.lat,
+                      lng: placeInfo.lng,
+                      state: placeInfo.state,
+                      customerId: user.attributes["custom:userId"],
+                    },
+                  },
+                },
+              });
               navigation.navigate("JobConfirmation");
             }}
             style={[
