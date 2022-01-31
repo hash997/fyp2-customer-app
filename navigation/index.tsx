@@ -41,6 +41,8 @@ import { useEffect } from "react";
 import { HubCallback } from "@aws-amplify/core/lib/Hub";
 import JobConfirmationScreen from "../screens/JobConfirmationScreen";
 import LandingScreen from "../screens/LandingScreen";
+import PickWorker from "../screens/PickWorkerScreen";
+import PickWorkerScreen from "../screens/PickWorkerScreen";
 
 export default function Navigation({
   colorScheme,
@@ -71,7 +73,6 @@ export default function Navigation({
       })
       .catch((error) => {
         setUser(undefined);
-        console.log("error", error);
       });
     return () => {
       Hub.remove("auth", authListener);
@@ -127,6 +128,14 @@ const RootNavigator = () => {
           component={PickLocationScreen}
         />
         <Stack.Screen
+          name="PickWorker"
+          options={() => ({
+            headerShown: true,
+            title: "Pick Worker",
+          })}
+          component={PickWorkerScreen}
+        />
+        <Stack.Screen
           name="JobConfirmation"
           options={() => ({
             headerShown: true,
@@ -174,7 +183,6 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
   const colorScheme = useColorScheme();
-  console.log("there is use");
   return (
     <BottomTab.Navigator
       initialRouteName="Home"

@@ -81,18 +81,6 @@ export const createJobRequest = /* GraphQL */ `
       status
       title
       description
-      totalCost
-      offers {
-        id
-        customerId
-        workerId
-        jobId
-        price
-        sentAt
-        status
-      }
-      sentAt
-      completedAt
     }
   }
 `;

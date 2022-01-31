@@ -25,7 +25,7 @@ export type RootStackParamList = {
   AssemblingFurniture: NavigatorScreenParams<RootTabParamList> | undefined;
   JobConfirmation: undefined;
   PickLocation: undefined;
-
+  PickWorker: undefined;
   Moving: undefined;
 };
 

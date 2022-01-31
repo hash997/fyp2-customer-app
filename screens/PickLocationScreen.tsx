@@ -17,6 +17,7 @@ import {
   useJobRequest,
 } from "../state-store/job-request-state";
 import { useAuth } from "../state-store/auth-state";
+import { BookingType } from "../job-request-types";
 
 const apiKey = "AIzaSyDJHF_JXu4QD7YeJCRgyRp-Yqez7JLR29A";
 
@@ -80,9 +81,7 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
         data["result"]["geometry"]["location"]["lat"],
         data["result"]["geometry"]["location"]["lng"]
       );
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   // THE DIFFERENCE BETWEEN THIS AND GETLATLNGBYPLACEID IS THAT THIS RETURNS AN ARRAY OF RESULTS WITH MORE INFORMATION
@@ -93,20 +92,13 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
       );
       const data = await res.json();
       getAddressCityCountry(data);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const getAddressCityCountry = (jsonRes: any) => {
     let city, state, country;
     const lat = jsonRes?.results[0].geometry.location.lat;
     const lng = jsonRes?.results[0].geometry.location.lng;
-
-    console.log("=================================");
-
-    // console.log("jsonRes = > ", jsonRes?.results[0].geometry.location.lat);
-    console.log("=================================");
 
     const address = jsonRes?.results[0]?.formatted_address;
     for (let i = 0; i < jsonRes?.results[0]?.address_components.length; i++) {
@@ -137,8 +129,6 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
       lng: lng,
     });
   };
-
-  console.log("place info =>", placeInfo);
 
   return (
     <View style={styles.container}>
@@ -226,17 +216,25 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
                   job: {
                     ...currentJobRequest.job,
                     location: {
-                      address: placeInfo.address,
-                      city: placeInfo.city,
-                      lat: placeInfo.lat,
-                      lng: placeInfo.lng,
-                      state: placeInfo.state,
-                      customerId: user.attributes["custom:userId"],
+                      ...currentJobRequest.job.location,
+                      address: placeInfo?.address,
+                      city: placeInfo?.city,
+                      lat: placeInfo?.lat,
+                      lng: placeInfo?.lng,
+                      state: placeInfo?.state,
                     },
                   },
                 },
               });
-              navigation.navigate("JobConfirmation");
+              if (currentJobRequest.job.bookingType === BookingType.urgent) {
+                navigation.navigate("JobConfirmation");
+                return;
+              }
+              if (
+                currentJobRequest.job.bookingType === BookingType.pickWorker
+              ) {
+                navigation.navigate("PickWorker");
+              }
             }}
             style={[
               styles.btn,
@@ -248,7 +246,7 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
         </View>
       </View>
 
-      {isLoading ? (
+      {isLoading && (
         <>
           <View
             style={{
@@ -278,7 +276,7 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
             />
           </View>
         </>
-      ) : undefined}
+      )}
       <MapView
         style={styles.map}
         provider="google"

@@ -68,7 +68,6 @@ export const AuthProvider: React.FC = ({ children }) => {
         dispatch({
           type: "clear",
         });
-        console.log("error", error);
       });
     return () => {
       Hub.remove("auth", authListener);

@@ -88,11 +88,11 @@ const SignUp = ({ navigation }: RootStackScreenProps<"SignUp">) => {
         },
       });
       const createCstmrData = await createCstmrRes;
-      console.log("cstmrData=>", createCstmrData);
+
 
       createCredForCstmr(values, createCstmrData);
     } catch (error) {
-      console.log("shit went south while getting customer =>", error);
+
     }
   };
 
@@ -112,20 +112,19 @@ const SignUp = ({ navigation }: RootStackScreenProps<"SignUp">) => {
       };
       const { user } = await Auth.signUp(newCstmrToBeSavedOnCognito);
       // const createCstmrData = await user;
-      console.log("cstmrData=>", user);
       setAuthRes(user);
     } catch (error) {
-      console.log("shit went south while getting customer =>", error);
+
     }
   };
 
   const submitValidationCode = async (code: string) => {
-    console.log("validationcode ffuc invoked");
+
     try {
       const confrimRes = await Auth.confirmSignUp(authRes?.username, code);
-      console.log("confirmRes =>", confrimRes);
+
     } catch (error) {
-      console.log(error);
+
       return error;
     }
   };
@@ -325,7 +324,7 @@ const SignUp = ({ navigation }: RootStackScreenProps<"SignUp">) => {
                 initialValues={{ code: "" }}
                 validationSchema={confirmationCode}
                 onSubmit={async (values) => {
-                  console.log("onSubmitFunc Invoked");
+
                   try {
                     setSubmitting(true);
 
@@ -374,7 +373,6 @@ const SignUp = ({ navigation }: RootStackScreenProps<"SignUp">) => {
                     </Text>
                     <TouchableOpacity
                       onPress={() => {
-                        console.log("onpress invoked");
                         handleSubmit();
                       }}
                       style={appStyles.btnCntr}

@@ -7,9 +7,17 @@ export interface AuthState {
 }
 
 export interface JobRequest {
+  title: string;
+  description: string;
+  bookingType: BookingType;
   numberOfItem: number;
   items: string[];
   location: Location;
+}
+
+export enum BookingType {
+  urgent = "URGENT",
+  pickWorker = "PICK_WORKER",
 }
 
 export interface Location {

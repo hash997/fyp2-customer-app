@@ -13,6 +13,7 @@ import {
   useDispatchJobRequest,
 } from "../state-store/job-request-state";
 import { MaterialIcons } from "@expo/vector-icons";
+import { BookingType } from "../job-request-types";
 
 const items = [1, 2, 3, 4];
 const furnitureArr = ["Desk or Table", "Bed Frame", "Chair", "Other"];
@@ -22,14 +23,12 @@ const AssemblingFurnitureScreen = (props: any) => {
   const dispatchCurrentInquiry = useDispatchJobRequest();
 
   const [noOfItems, setNoOfItems] = useState(0);
-  const [selectedFurniture, setSelectedFurniture] = useState<
-    number | undefined
-  >();
+  const [selectedFurniture, setSelectedFurniture] =
+    useState<number | undefined>();
   const [furniture, setFurniture] = useState<string>("");
   const [otherFur, setOtherFur] = useState<string[]>([]);
-  const [selectedItem, setSelectedItem] = useState<number | undefined>(
-    undefined
-  );
+  const [selectedItem, setSelectedItem] =
+    useState<number | undefined>(undefined);
   const [isUrgent, setIsUrgent] = useState<string | undefined>();
 
   useEffect(() => {}, [currentJobRequest]);
@@ -46,7 +45,6 @@ const AssemblingFurnitureScreen = (props: any) => {
     });
   }, []);
 
-  console.log("length of other furn => ", currentJobRequest);
   return (
     <View style={styles.container}>
       <View style={{ marginTop: "30%" }}>
@@ -62,7 +60,6 @@ const AssemblingFurnitureScreen = (props: any) => {
                     { borderColor: selectedItem === i ? "darkblue" : "#eee" },
                   ]}
                   onPress={() => {
-                    console.log("i =>", i);
                     setSelectedItem(i);
                     setNoOfItems(i + 1);
                   }}
@@ -78,7 +75,6 @@ const AssemblingFurnitureScreen = (props: any) => {
                 keyboardType="numeric"
                 onChangeText={(value) => {
                   const val = +value;
-                  console.log("fucking val =>", val);
                   if (val < 3) {
                     setNoOfItems(val - 1);
                     setSelectedItem(val - 1);
@@ -234,6 +230,16 @@ const AssemblingFurnitureScreen = (props: any) => {
               ]}
               onPress={() => {
                 setIsUrgent("urgent");
+                dispatchCurrentInquiry({
+                  type: "update",
+                  payload: {
+                    ...currentJobRequest,
+                    job: {
+                      ...currentJobRequest.job,
+                      bookingType: BookingType.urgent,
+                    },
+                  },
+                });
               }}
             >
               <Text style={styles.bookingTypeTxt}>Urgent</Text>
@@ -253,6 +259,16 @@ const AssemblingFurnitureScreen = (props: any) => {
               ]}
               onPress={() => {
                 setIsUrgent("bookApt");
+                dispatchCurrentInquiry({
+                  type: "update",
+                  payload: {
+                    ...currentJobRequest,
+                    job: {
+                      ...currentJobRequest.job,
+                      bookingType: BookingType.pickWorker,
+                    },
+                  },
+                });
               }}
             >
               <Text style={styles.bookingTypeTxt}>Book Appointment </Text>
