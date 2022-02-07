@@ -16,31 +16,27 @@ const JobConfirmationScreen = (props: any) => {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // console.log("user= > ", user);
-
   const handleCreateJobReq = async () => {
+    if (!user) throw new Error("user is not defined");
     try {
       setLoading(true);
       const jobReqResp = await API.graphql(
         graphqlOperation(createJobRequest, {
           createJobRequestInput: {
-            customerId: user?.attributes["custom:userId"]
-              ? user?.attributes["custom:userId"]
-              : "",
+            customerId: user.id,
+
             location: {
-              address: "",
-              city: "",
-              customerId: user?.attributes["custom:userId"]
-                ? user?.attributes["custom:userId"]
-                : "",
-              lat: "",
-              lng: "",
-              state: "selangor",
+              address: job.location.address,
+              city: job.location.city,
+              customerId: user.id,
+              lat: job.location.lat,
+              lng: job.location.lng,
+              state: job.location.state,
             },
             status: JobStatus.CREATED,
             title: "Furniture Assembly",
             city: job.location.city,
-            description: "description bla bla bla",
+            description: job.description,
           },
         })
       );
@@ -51,21 +47,15 @@ const JobConfirmationScreen = (props: any) => {
 
       setSuccess(false);
 
-      // props.navigation.navigate("home");
       props.navigation.navigate("Home");
-      console.log("job req res => ", jobReqResp);
     } catch (error) {
       setErr(true);
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       setErr(false);
       setLoading(false);
-
-      console.log("shit went south while creating job req =>", error);
     }
   };
-
-  console.log("errorrr= > ", err);
 
   useEffect(() => {}, [err, loading, success]);
   return (
@@ -112,6 +102,10 @@ const JobConfirmationScreen = (props: any) => {
             <View style={appStyles.TitlTxtCntr}>
               <Text style={styles.title}>Job Title</Text>
               <Text style={styles.txt}>Assembling Furniture</Text>
+            </View>
+            <View style={appStyles.TitlTxtCntr}>
+              <Text style={styles.title}>Job Desciption</Text>
+              <Text style={styles.txt}>{job.description}</Text>
             </View>
             <View style={appStyles.TitlTxtCntr}>
               <Text style={styles.title}>Number Of Items</Text>

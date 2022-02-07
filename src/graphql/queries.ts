@@ -43,23 +43,30 @@ export const workerById = /* GraphQL */ `
       icNo
       phoneNo
       speciality
-      offers {
-        id
-        customerId
-        workerId
-        jobId
-        price
-        sentAt
-        status
-      }
-      appointments {
-        id
-        customerId
-        workerId
-        offerId
-        time
-        status
-      }
+      hourlyRate
+      city
+      lat
+      lng
+      isActive
+    }
+  }
+`;
+
+export const workersByCity = /* GraphQL */ `
+  query workersByCity($city: String!, $speciality: WorkerSpeciality!) {
+    workersByCity(city: $city, speciality: $speciality) {
+      id
+      fName
+      lName
+      email
+      icNo
+      phoneNo
+      speciality
+      hourlyRate
+      city
+      lat
+      lng
+      isActive
     }
   }
 `;

@@ -10,7 +10,14 @@ const SettingsScreen = ({ navigation }: RootTabScreenProps<"Settings">) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Settings screen</Text>
-      <Button title="Sign out" onPress={() => Auth.signOut()} />
+      <Button
+        title="Sign out"
+        onPress={() => {
+          Auth.signOut();
+
+          navigation.navigate("Root");
+        }}
+      />
       {/* <View
         style={styles.separator}
         lightColor="#eee"

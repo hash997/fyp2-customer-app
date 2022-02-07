@@ -23,13 +23,16 @@ const AssemblingFurnitureScreen = (props: any) => {
   const dispatchCurrentInquiry = useDispatchJobRequest();
 
   const [noOfItems, setNoOfItems] = useState(0);
-  const [selectedFurniture, setSelectedFurniture] =
-    useState<number | undefined>();
+  const [selectedFurniture, setSelectedFurniture] = useState<
+    number | undefined
+  >();
   const [furniture, setFurniture] = useState<string>("");
   const [otherFur, setOtherFur] = useState<string[]>([]);
-  const [selectedItem, setSelectedItem] =
-    useState<number | undefined>(undefined);
+  const [selectedItem, setSelectedItem] = useState<number | undefined>(
+    undefined
+  );
   const [isUrgent, setIsUrgent] = useState<string | undefined>();
+  const [description, setDescription] = useState("");
 
   useEffect(() => {}, [currentJobRequest]);
   useEffect(() => {
@@ -217,6 +220,46 @@ const AssemblingFurnitureScreen = (props: any) => {
 
         {currentJobRequest.currentStep === 3 && (
           <>
+            <Text style={styles.title}>
+              Brefily explain the job you need done
+            </Text>
+            <TextInput
+              onChangeText={setDescription}
+              value={description}
+              style={[
+                styles.boxTxt,
+                {
+                  width: "100%",
+                  height: "40%",
+                  borderWidth: 1,
+                  borderColor: "#eee",
+                },
+              ]}
+            />
+
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => {
+                dispatchCurrentInquiry({
+                  type: "update",
+                  payload: {
+                    ...currentJobRequest,
+                    currentStep: currentJobRequest.currentStep + 1,
+                    job: {
+                      ...currentJobRequest.job,
+                      description: description,
+                    },
+                  },
+                });
+              }}
+            >
+              <Text style={styles.btnTxt}>Continue</Text>
+            </TouchableOpacity>
+          </>
+        )}
+
+        {currentJobRequest.currentStep === 4 && (
+          <>
             <Text style={styles.title}>Booking Type</Text>
 
             <Pressable
@@ -280,7 +323,7 @@ const AssemblingFurnitureScreen = (props: any) => {
             <TouchableOpacity
               style={styles.btn}
               onPress={() => {
-                if (currentJobRequest.currentStep === 3) {
+                if (currentJobRequest.currentStep === 4) {
                   props.navigation.navigate("PickLocation");
                   return;
                 }

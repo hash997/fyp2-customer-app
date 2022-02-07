@@ -1,11 +1,13 @@
 import { Hub, HubCallback } from "@aws-amplify/core";
-import { Auth } from "aws-amplify";
+import { API, Auth } from "aws-amplify";
 import React, { Dispatch, Reducer, useEffect } from "react";
 import { useReducer, useContext, createContext } from "react";
 import { AuthState, JobRequest, JobRequestState } from "../job-request-types";
+import { customerById } from "../src/graphql/queries";
 
 const initialState: AuthState = {
   user: undefined,
+  congnitoUser: undefined,
 };
 interface Action {
   type: string;
@@ -32,15 +34,34 @@ const reducer = (currentUser: AuthState, action: Action) => {
 export const AuthProvider: React.FC = ({ children }) => {
   const [currentUser, dispatch] = useReducer(reducer, initialState);
 
+  const getUser = async (userId: string) => {
+    try {
+      const userRes: any = await API.graphql({
+        query: customerById,
+        variables: { customerId: userId },
+      });
+
+      const userResData = await userRes;
+
+      dispatch({
+        type: "update",
+        payload: {
+          ...currentUser,
+          user: userResData?.data?.customerById,
+        },
+      });
+    } catch (error) {
+      dispatch({
+        type: "clear",
+      });
+    }
+  };
+
   const authListener: HubCallback = async ({ payload: { event, data } }) => {
     switch (event) {
       case "signIn":
-        dispatch({
-          type: "update",
-          payload: {
-            user: data,
-          },
-        });
+        getUser(data.attributes["custom:userId"]);
+
         break;
       case "signOut":
         dispatch({
@@ -57,10 +78,13 @@ export const AuthProvider: React.FC = ({ children }) => {
 
     Auth.currentAuthenticatedUser()
       .then((data) => {
+        getUser(data.attributes["custom:userId"]);
+
         dispatch({
           type: "update",
           payload: {
-            user: data,
+            ...currentUser,
+            congnitoUser: data,
           },
         });
       })

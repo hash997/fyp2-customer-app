@@ -15,7 +15,7 @@ import { RootStackScreenProps } from "../types";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { appStyles } from "../styles";
-import { API, Auth } from "aws-amplify";
+import { API, Auth, nav } from "aws-amplify";
 import { createCustomer } from "../src/graphql/mutations";
 
 interface signUpVals {
@@ -89,11 +89,8 @@ const SignUp = ({ navigation }: RootStackScreenProps<"SignUp">) => {
       });
       const createCstmrData = await createCstmrRes;
 
-
       createCredForCstmr(values, createCstmrData);
-    } catch (error) {
-
-    }
+    } catch (error) {}
   };
 
   const createCredForCstmr = async (
@@ -113,18 +110,15 @@ const SignUp = ({ navigation }: RootStackScreenProps<"SignUp">) => {
       const { user } = await Auth.signUp(newCstmrToBeSavedOnCognito);
       // const createCstmrData = await user;
       setAuthRes(user);
-    } catch (error) {
-
-    }
+    } catch (error) {}
   };
 
   const submitValidationCode = async (code: string) => {
-
     try {
       const confrimRes = await Auth.confirmSignUp(authRes?.username, code);
-
+      navigation.navigate("Root");
     } catch (error) {
-
+      setError(true);
       return error;
     }
   };
@@ -276,6 +270,7 @@ const SignUp = ({ navigation }: RootStackScreenProps<"SignUp">) => {
                         placeholder={"Password"}
                         onChangeText={handleChange("password")}
                         onBlur={handleBlur("password")}
+                        secureTextEntry={true}
                         value={values.password}
                         style={appStyles.txtInput}
                       />
@@ -299,6 +294,7 @@ const SignUp = ({ navigation }: RootStackScreenProps<"SignUp">) => {
                         placeholder={"Confirm password "}
                         onChangeText={handleChange("confirmPassword")}
                         onBlur={handleBlur("confirmPassword")}
+                        secureTextEntry={true}
                         value={values.confirmPassword}
                         style={appStyles.txtInput}
                       />
@@ -324,7 +320,6 @@ const SignUp = ({ navigation }: RootStackScreenProps<"SignUp">) => {
                 initialValues={{ code: "" }}
                 validationSchema={confirmationCode}
                 onSubmit={async (values) => {
-
                   try {
                     setSubmitting(true);
 

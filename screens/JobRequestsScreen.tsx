@@ -9,7 +9,7 @@ import { Entypo } from "@expo/vector-icons";
 import JobRequest from "../components/jobRequests/JobRequest";
 import * as Progress from "react-native-progress";
 
-const AppointmentsScreen = () => {
+const JobRequestsScreen = () => {
   const [jobReqs, setJobReqs] = useState<any>();
   const getCustomersJobs = async () => {
     try {
@@ -19,7 +19,6 @@ const AppointmentsScreen = () => {
           customerId: "bea28ca3-1e5a-4eb0-96b0-1b9a11485687",
         },
       });
-      // console.log("customers jobs => ", jobReqResp);
       setJobReqs(jobReqResp?.data?.jobsByCustomerId);
     } catch (error) {
       console.log("shit went south while getting customers job reqs =>", error);
@@ -68,7 +67,8 @@ const AppointmentsScreen = () => {
 
   return (
     <View style={appStyles.container}>
-      <ScrollView>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        {/* <View> */}
         <View>
           <Text style={appStyles.title}>Your Job Requests</Text>
         </View>
@@ -76,6 +76,7 @@ const AppointmentsScreen = () => {
           jobReqs.map((jobReq: any) => (
             <JobRequest key={jobReq.id} jobReq={jobReq} />
           ))}
+        {/* </View> */}
       </ScrollView>
     </View>
   );
@@ -98,4 +99,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AppointmentsScreen;
+export default JobRequestsScreen;

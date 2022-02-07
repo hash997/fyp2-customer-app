@@ -1,9 +1,12 @@
+import { Customer } from "./src/API";
+
 export interface JobRequestState {
   job: JobRequest;
   currentStep: number;
 }
 export interface AuthState {
-  user: any;
+  user: Customer | undefined;
+  congnitoUser: any;
 }
 
 export interface JobRequest {
@@ -13,6 +16,13 @@ export interface JobRequest {
   numberOfItem: number;
   items: string[];
   location: Location;
+  worker?: WorkerDetails;
+}
+
+export interface WorkerDetails {
+  firstName: string;
+  lastName: string;
+  hourlyRate: number;
 }
 
 export enum BookingType {

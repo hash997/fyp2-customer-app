@@ -27,65 +27,34 @@ import LinkingConfiguration from "./LinkingConfiguration";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import HomeScreen from "../screens/HomeScreen";
-import AppointmentsScreen from "../screens/AppointmentsScreen";
+import JobRequestsScreen from "../screens/JobRequestsScreen";
 import OffersScreen from "../screens/OffersScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import AssemblingFurnitureScreen from "../screens/AssemblingFurnitureScreen";
 import MovingScreen from "../screens/MovingScreen";
 import PickLocationScreen from "../screens/PickLocationScreen";
-import { Auth, Hub } from "aws-amplify";
-import { useState } from "react";
 import SignIn from "../screens/SignInScreen";
 import SignUp from "../screens/SignUpScreen";
 import { useEffect } from "react";
-import { HubCallback } from "@aws-amplify/core/lib/Hub";
 import JobConfirmationScreen from "../screens/JobConfirmationScreen";
-import LandingScreen from "../screens/LandingScreen";
-import PickWorker from "../screens/PickWorkerScreen";
 import PickWorkerScreen from "../screens/PickWorkerScreen";
+import { useAuth } from "../state-store/auth-state";
 
 export default function Navigation({
   colorScheme,
 }: {
   colorScheme: ColorSchemeName;
 }) {
-  const [user, setUser] = useState<any>(undefined);
+  const { user } = useAuth();
 
-  const authListener: HubCallback = async ({ payload: { event, data } }) => {
-    switch (event) {
-      case "signIn":
-        setUser(data);
-        break;
-      case "signOut":
-        setUser(undefined);
-        break;
-    }
-  };
-
-  useEffect(() => {
-    const abortController = new AbortController();
-
-    Hub.listen("auth", authListener);
-
-    Auth.currentAuthenticatedUser()
-      .then((data) => {
-        setUser(data);
-      })
-      .catch((error) => {
-        setUser(undefined);
-      });
-    return () => {
-      Hub.remove("auth", authListener);
-      abortController.abort();
-    };
-  }, []);
+  useEffect(() => {}, [user]);
 
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
       theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
     >
-      <RootNavigator />
+      {user ? <RootNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
 }
@@ -99,11 +68,11 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const RootNavigator = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen
+      {/* <Stack.Screen
         name="Landing"
         component={LandingScreen}
         options={{ headerShown: false }}
-      />
+      /> */}
       <Stack.Screen
         name="Root"
         component={BottomTabNavigator}
@@ -155,22 +124,6 @@ const RootNavigator = () => {
           component={MovingScreen}
         />
       </Stack.Group>
-
-      <Stack.Screen
-        name="SignIn"
-        component={SignIn}
-        options={{ title: "SignIn", headerShown: false }}
-      />
-      <Stack.Group
-      //  screenOptions={{ presentation: "" }}
-      >
-        {/* <Stack.Screen name="SignIn" component={ModalScreen} /> */}
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="SignUp"
-          component={SignUp}
-        />
-      </Stack.Group>
     </Stack.Navigator>
   );
 };
@@ -216,10 +169,10 @@ function BottomTabNavigator() {
         })}
       />
       <BottomTab.Screen
-        name="Appointments"
-        component={AppointmentsScreen}
+        name="JobRequests"
+        component={JobRequestsScreen}
         options={{
-          title: "Appointments",
+          title: "Job Requests",
           tabBarIcon: ({ color }) => (
             <Ionicons name="ios-calendar" size={24} color={color} />
           ),
@@ -262,11 +215,11 @@ function BottomTabNavigator() {
 const AuthNavigator = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen
+      {/* <Stack.Screen
         name="Landing"
         component={LandingScreen}
         options={{ headerShown: false }}
-      />
+      /> */}
       <Stack.Screen
         name="SignIn"
         component={SignIn}
@@ -275,7 +228,6 @@ const AuthNavigator = () => {
       <Stack.Group
       //  screenOptions={{ presentation: "" }}
       >
-        {/* <Stack.Screen name="SignIn" component={ModalScreen} /> */}
         <Stack.Screen
           options={{ headerShown: false }}
           name="SignUp"

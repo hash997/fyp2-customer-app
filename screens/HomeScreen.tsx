@@ -4,34 +4,10 @@ import { StyleSheet, ScrollView, TextInput } from "react-native";
 import HandymanSection from "../components/home/HandymanSection";
 import ProfessionalsSections from "../components/home/ProfessionalsSection";
 import TopServicesSection from "../components/home/TopServicesSection";
-import { Text, View } from "../components/Themed";
+import { View } from "../components/Themed";
 import { RootTabScreenProps } from "../types";
-import { API } from "aws-amplify";
-import { customerById } from "../src/graphql/queries";
-import { useEffect } from "react";
-import { useRoute } from "@react-navigation/native";
 
 const HomeScreen = ({ navigation }: RootTabScreenProps<"Home">) => {
-  const route = useRoute();
-
-  const getCustomer = async () => {
-    let cstmrRes: any;
-    // try {
-    //   cstmrRes = API.graphql({
-    //     query: customerById,
-    //     variables: { customerId: "fd4b2d4f-aee1-4c4d-9be6-13f3fc0e3b3a" },
-    //   });
-    //   const cstmrData = await cstmrRes;
-    //   console.log("cstmrData=>", cstmrData);
-    // } catch (error) {
-    //   console.log("shit went south while getting customer =>", error);
-    // }
-    // console.log("customer Res =>", cstmrRes);
-  };
-  useEffect(() => {
-    getCustomer();
-  }, []);
-
   return (
     <View style={styles.container}>
       <View

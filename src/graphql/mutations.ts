@@ -84,6 +84,33 @@ export const createJobRequest = /* GraphQL */ `
     }
   }
 `;
+
+export const createJobRequestToWorker = /* GraphQL */ `
+  mutation createJobRequestToWorker(
+    $createJobRequestToWorkerInput: CreateJobRequestToWorkerInput!
+  ) {
+    createJobRequestToWorker(
+      createJobRequestToWorkerInput: $createJobRequestToWorkerInput
+    ) {
+      id
+      customerId
+      workerId
+      location {
+        id
+        customerId
+        lng
+        lat
+        state
+        city
+        address
+      }
+      # city
+      status
+      title
+      description
+    }
+  }
+`;
 export const createOffer = /* GraphQL */ `
   mutation CreateOffer($createOfferInput: CreateOfferInput!) {
     createOffer(createOfferInput: $createOfferInput) {
