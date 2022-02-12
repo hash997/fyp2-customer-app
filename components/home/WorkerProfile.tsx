@@ -7,15 +7,15 @@ import { API } from "aws-amplify";
 import { createJobRequestToWorker } from "../../src/graphql/mutations";
 import { useJobRequest } from "../../state-store/job-request-state";
 import { useAuth } from "../../state-store/auth-state";
-import { useRoute } from "@react-navigation/native";
-import SignIn from "../auth/SignIn";
 
 const WorkerProfile = ({
   worker,
   navigation,
+  jobDate,
 }: {
   worker: Worker;
   navigation: any;
+  jobDate: Date;
 }) => {
   const { user } = useAuth();
   const { job } = useJobRequest();
@@ -25,9 +25,11 @@ const WorkerProfile = ({
   }
 
   const handleSendJobRequest = async () => {
+    console.log("fucking clicked");
+
     const createJobRequestToWorkerInput = {
       customerId: user.id,
-      description: "Job Discription will go here",
+      description: job.description,
       location: {
         address: job.location.address,
         city: job.location.city,
@@ -39,6 +41,7 @@ const WorkerProfile = ({
       status: JobStatus.CREATED,
       title: "Furniture Assembly",
       workerId: worker.id,
+      time: jobDate.toISOString(),
     };
     try {
       const createJobReqRes = await API.graphql({
@@ -47,9 +50,9 @@ const WorkerProfile = ({
           createJobRequestToWorkerInput: createJobRequestToWorkerInput,
         },
       });
-
+      console.log("createJobReqRes", createJobReqRes);
     } catch (error) {
-
+      console.log("error", error);
     }
   };
   return (

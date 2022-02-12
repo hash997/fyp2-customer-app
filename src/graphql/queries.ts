@@ -159,6 +159,7 @@ export const offersByCustomerId = /* GraphQL */ `
       price
       sentAt
       status
+      suggestedTime
     }
   }
 `;

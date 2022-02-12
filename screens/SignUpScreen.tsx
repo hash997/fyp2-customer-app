@@ -97,6 +97,8 @@ const SignUp = ({ navigation }: RootStackScreenProps<"SignUp">) => {
     values: signUpVals,
     createCstmrData: any
   ) => {
+    console.log("bout to create creds for customer ", createCstmrData);
+
     try {
       const newCstmrToBeSavedOnCognito = {
         username: `${values.firstName}`,
@@ -109,8 +111,15 @@ const SignUp = ({ navigation }: RootStackScreenProps<"SignUp">) => {
       };
       const { user } = await Auth.signUp(newCstmrToBeSavedOnCognito);
       // const createCstmrData = await user;
+      console.log("user created ", user);
+
       setAuthRes(user);
-    } catch (error) {}
+    } catch (error) {
+      console.log(
+        "something went wrong while creating creds for customer ",
+        error
+      );
+    }
   };
 
   const submitValidationCode = async (code: string) => {

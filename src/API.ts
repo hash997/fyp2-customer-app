@@ -67,6 +67,7 @@ export type Offer = {
   price: number;
   sentAt: string;
   status: OfferStatus;
+  suggestedTime: string;
 };
 
 export enum OfferStatus {
@@ -95,6 +96,14 @@ export type CreateWorkerInput = {
   speciality: WorkerSpeciality;
 };
 
+export enum AppointmentStatus {
+  UPCOMING = "UPCOMING",
+  CUSTOMER_CANCELLED = "CUSTOMER_CANCELLED",
+  WORKER_CANCELED = "WORKER_CANCELED",
+  COMPLETED = "COMPLETED",
+  CUSTOMER_NO_SHOW_UP = "CUSTOMER_NO_SHOW_UP",
+  WORER_NO_SHOW_UP = "WORER_NO_SHOW_UP",
+}
 export enum WorkerSpeciality {
   HANDYMAN = "HANDYMAN",
   DRIVER = "DRIVER",

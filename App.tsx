@@ -9,6 +9,7 @@ import Navigation from "./navigation";
 import awsmobile from "./src/aws-exports";
 import { JobRequestProvider } from "./state-store/job-request-state";
 import { AuthProvider } from "./state-store/auth-state";
+import { OfferProvider } from "./state-store/offers-provider";
 Amplify.configure(awsmobile);
 
 export default function App() {
@@ -21,9 +22,11 @@ export default function App() {
     return (
       <SafeAreaProvider>
         <AuthProvider>
-          <JobRequestProvider>
-            <Navigation colorScheme={colorScheme} />
-          </JobRequestProvider>
+          <OfferProvider>
+            <JobRequestProvider>
+              <Navigation colorScheme={colorScheme} />
+            </JobRequestProvider>
+          </OfferProvider>
         </AuthProvider>
         <StatusBar />
       </SafeAreaProvider>

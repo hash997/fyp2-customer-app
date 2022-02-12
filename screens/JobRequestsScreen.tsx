@@ -8,15 +8,18 @@ import { appStyles } from "../styles";
 import { Entypo } from "@expo/vector-icons";
 import JobRequest from "../components/jobRequests/JobRequest";
 import * as Progress from "react-native-progress";
+import { useAuth } from "../state-store/auth-state";
 
 const JobRequestsScreen = () => {
+  const { user } = useAuth();
   const [jobReqs, setJobReqs] = useState<any>();
   const getCustomersJobs = async () => {
+    if (!user) return;
     try {
       const jobReqResp: any = await API.graphql({
         query: jobsByCustomerId,
         variables: {
-          customerId: "bea28ca3-1e5a-4eb0-96b0-1b9a11485687",
+          customerId: user?.id,
         },
       });
       setJobReqs(jobReqResp?.data?.jobsByCustomerId);
@@ -29,7 +32,7 @@ const JobRequestsScreen = () => {
     getCustomersJobs();
   }, []);
 
-  useEffect(() => {}, [jobReqs]);
+  useEffect(() => {}, [user]);
 
   if (!jobReqs || jobReqs.length < 1) {
     return (
@@ -81,22 +84,5 @@ const JobRequestsScreen = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-});
 
 export default JobRequestsScreen;

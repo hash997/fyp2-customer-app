@@ -124,6 +124,39 @@ export const createOffer = /* GraphQL */ `
     }
   }
 `;
+
+// mutation MyMutation {
+//   createAppointment(createAppointmentInput: {status: UPCOMING, offerId: "", customerId: "", workerId: ""}) {
+//     customerId
+//     id
+//     offerId
+//     status
+//     time
+//     workerId
+//     worker {
+//       email
+//       fName
+//     }
+//   }
+// }
+
+export const createAppointment = /* GraphQL */ `
+  mutation createAppointment($createAppointmentInput: CreateAppointmentInput!) {
+    createAppointment(createAppointmentInput: $createAppointmentInput) {
+      customerId
+      id
+      offerId
+      status
+      time
+      workerId
+      worker {
+        email
+        fName
+      }
+    }
+  }
+`;
+
 export const updateCustomer = /* GraphQL */ `
   mutation UpdateCustomer($updateCustomerInput: UpdateCustomerInput!) {
     updateCustomer(updateCustomerInput: $updateCustomerInput) {

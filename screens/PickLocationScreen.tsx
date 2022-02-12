@@ -10,7 +10,6 @@ import {
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import * as Location from "expo-location";
 import * as Progress from "react-native-progress";
-import { MaterialIcons } from "@expo/vector-icons";
 import { AssemblingFurniture, RootTabScreenProps } from "../types";
 import {
   useDispatchJobRequest,
@@ -18,6 +17,11 @@ import {
 } from "../state-store/job-request-state";
 import { useAuth } from "../state-store/auth-state";
 import { BookingType } from "../job-request-types";
+import { API } from "aws-amplify";
+import { workersByCity } from "../src/graphql/queries";
+import { WorkerSpeciality } from "../src/API";
+import { Worker } from "../src/API";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const apiKey = "AIzaSyDJHF_JXu4QD7YeJCRgyRp-Yqez7JLR29A";
 
@@ -42,7 +46,28 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
   const [placeInfo, setPlaceInfo] = useState<LocationInfo>();
   const currentJobRequest = useJobRequest();
   const dispatchCurrentJobRequest = useDispatchJobRequest();
+  const [nearbyWorkers, setNearByWorkers] = useState<Worker[] | undefined>(
+    undefined
+  );
   const { user } = useAuth();
+
+  const getNearByWorkers = async () => {
+    try {
+      const workerRes: any = await API.graphql({
+        query: workersByCity,
+        variables: {
+          city: "Cyberjaya",
+          speciality: WorkerSpeciality.HANDYMAN,
+        },
+      });
+      const workers = workerRes?.data?.workersByCity;
+
+      setNearByWorkers(workers);
+    } catch (error) {
+      setErrorMsg("Error getting nearby workers");
+      console.log("some error", error);
+    }
+  };
 
   // THIS FUNCTION IS USED TO ASK THE USER FOR PREMISSION TO GET LOCATION AND THEN GET'S THE LOCATION
   // THIS WILL GIVE THE LAT AND LNG AND SOME OTHER INFO.
@@ -130,6 +155,12 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
     });
   };
 
+  useEffect(() => {
+    getNearByWorkers();
+  }, []);
+
+  useEffect(() => {}, [nearbyWorkers]);
+
   return (
     <View style={styles.container}>
       <View style={styles.inptCtn}>
@@ -167,6 +198,8 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
           query={{
             key: apiKey,
             language: "en",
+            components: "country:MY",
+            rankby: "distance",
           }}
         />
       </View>
@@ -287,15 +320,28 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
           longitudeDelta: lngLat?.lng ? 0.03 : 15,
         }}
       >
-        {lngLat?.lng ? (
-          <Marker
-            key={1}
-            coordinate={{
-              latitude: lngLat?.lat,
-              longitude: lngLat?.lng,
-            }}
-          />
-        ) : undefined}
+        {nearbyWorkers &&
+          nearbyWorkers.length > 0 &&
+          nearbyWorkers.map((wrkr) => {
+            console.log("wrkr", +wrkr.lat);
+            return (
+              <Marker
+                key={wrkr.id}
+                coordinate={{
+                  latitude: +wrkr.lng,
+                  longitude: +wrkr.lat,
+                }}
+                title={"worker"}
+                description={"near by worker"}
+              >
+                <MaterialIcons
+                  name="person-pin-circle"
+                  size={50}
+                  color="#0C4160"
+                />
+              </Marker>
+            );
+          })}
       </MapView>
     </View>
   );

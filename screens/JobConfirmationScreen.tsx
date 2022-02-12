@@ -2,7 +2,7 @@ import { API, graphqlOperation } from "aws-amplify";
 import React, { useEffect, useState } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import SignIn from "../components/auth/SignIn";
-import { JobStatus } from "../src/API";
+import { JobStatus, WorkerSpeciality } from "../src/API";
 import { createJobRequest } from "../src/graphql/mutations";
 import { useAuth } from "../state-store/auth-state";
 import { useJobRequest } from "../state-store/job-request-state";
@@ -24,7 +24,6 @@ const JobConfirmationScreen = (props: any) => {
         graphqlOperation(createJobRequest, {
           createJobRequestInput: {
             customerId: user.id,
-
             location: {
               address: job.location.address,
               city: job.location.city,
@@ -37,6 +36,7 @@ const JobConfirmationScreen = (props: any) => {
             title: "Furniture Assembly",
             city: job.location.city,
             description: job.description,
+            speciality: WorkerSpeciality.HANDYMAN,
           },
         })
       );
@@ -51,6 +51,7 @@ const JobConfirmationScreen = (props: any) => {
     } catch (error) {
       setErr(true);
       await new Promise((resolve) => setTimeout(resolve, 1500));
+      console.log("error", error);
 
       setErr(false);
       setLoading(false);

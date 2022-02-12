@@ -10,7 +10,7 @@ import { RootTabScreenProps } from "../types";
 const HomeScreen = ({ navigation }: RootTabScreenProps<"Home">) => {
   return (
     <View style={styles.container}>
-      <View
+      {/* <View
         lightColor="white"
         darkColor="rgba(255,255,255,0.1)"
         style={styles.txtInputContainer}
@@ -26,7 +26,7 @@ const HomeScreen = ({ navigation }: RootTabScreenProps<"Home">) => {
           }}
           placeholder="Search"
         />
-      </View>
+      </View> */}
       <ScrollView>
         <TopServicesSection navigation={navigation} />
         <HandymanSection />
