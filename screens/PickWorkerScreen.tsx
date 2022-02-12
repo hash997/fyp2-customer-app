@@ -17,13 +17,7 @@ const PickWorkerScreen = (props: any) => {
   const [appointment, setAppointment] = useState<Date | undefined>(undefined);
   const [step, setStep] = useState(0);
   const { job } = useJobRequest();
-  // const [date, setDate] = useState(
-  //   new Date(
-  //     `new Date().getFullYear(),
-  //     new Date().getMonth(),
-  //     new Date().getDay() + 1`
-  //   )
-  // );
+  const currentJobRequest = useJobRequest();
   // prettier-ignore
   const [date, setDate] = useState(new Date(new Date(`${new Date().getFullYear()}/${new Date().getMonth()+1}/${new Date().getDate() + 2}`).setHours(10, 0, 0, 0)));
 
@@ -35,31 +29,6 @@ const PickWorkerScreen = (props: any) => {
     setDate(currentDate);
   };
 
-  const getNearByWorkers = async () => {
-    try {
-      const workersRes: any = API.graphql({
-        query: workersByCity,
-        variables: {
-          city: "Cyberjaya",
-          speciality: "HANDYMAN",
-        },
-      });
-      const workersData = await workersRes;
-      setNearByWorkers(workersData?.data?.workersByCity);
-    } catch (error) {}
-  };
-
-  useEffect(() => {
-    getNearByWorkers();
-  }, []);
-
-  if (loading || !nearByWorkers) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>Getting near by workers...</Text>
-      </View>
-    );
-  }
   if (nearByWorkers?.length === 0) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -128,7 +97,7 @@ const PickWorkerScreen = (props: any) => {
         <Text style={appStyles.title}>Choose Worker</Text>
       </View>
       <ScrollView>
-        {nearByWorkers.map((worker) => (
+        {currentJobRequest.workers.map((worker) => (
           <WorkerProfile
             worker={worker}
             key={worker.id}

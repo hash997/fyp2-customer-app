@@ -1,8 +1,9 @@
-import { Customer } from "./src/API";
+import { Customer, Worker } from "./src/API";
 
 export interface JobRequestState {
   job: JobRequest;
   currentStep: number;
+  workers: Worker[] | [];
 }
 export interface AuthState {
   user: Customer | undefined;

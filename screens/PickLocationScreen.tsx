@@ -51,23 +51,37 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
   );
   const { user } = useAuth();
 
-  const getNearByWorkers = async () => {
+  const getNearByWorkers = async (city: string) => {
+    if (!city) {
+      console.log("no place info");
+      return;
+    }
     try {
       const workerRes: any = await API.graphql({
         query: workersByCity,
         variables: {
-          city: "Cyberjaya",
+          city: city,
           speciality: WorkerSpeciality.HANDYMAN,
         },
       });
       const workers = workerRes?.data?.workersByCity;
+      console.log("workers", workers);
 
       setNearByWorkers(workers);
+      dispatchCurrentJobRequest({
+        type: "update",
+        payload: {
+          ...currentJobRequest,
+          workers: workers,
+        },
+      });
     } catch (error) {
       setErrorMsg("Error getting nearby workers");
       console.log("some error", error);
     }
   };
+
+  console.log("current near by workers", currentJobRequest);
 
   // THIS FUNCTION IS USED TO ASK THE USER FOR PREMISSION TO GET LOCATION AND THEN GET'S THE LOCATION
   // THIS WILL GIVE THE LAT AND LNG AND SOME OTHER INFO.
@@ -153,11 +167,8 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
       lat: lat,
       lng: lng,
     });
+    getNearByWorkers(city);
   };
-
-  useEffect(() => {
-    getNearByWorkers();
-  }, []);
 
   useEffect(() => {}, [nearbyWorkers]);
 
@@ -236,9 +247,23 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.btnCtn}>
+        <View
+          style={[
+            styles.btnCtn,
+            // {
+            //   backgroundColor:
+            //     !placeInfo?.address || currentJobRequest.workers.length === 0
+            //       ? "grey"
+            //       : "#0C4160",
+            // },
+          ]}
+        >
           <TouchableOpacity
-            disabled={!placeInfo?.address}
+            disabled={
+              !placeInfo?.address ||
+              !currentJobRequest.workers ||
+              currentJobRequest.workers.length === 0
+            }
             onPress={() => {
               if (!placeInfo) return;
               dispatchCurrentJobRequest({
@@ -271,7 +296,7 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
             }}
             style={[
               styles.btn,
-              { backgroundColor: !placeInfo?.address ? "grey" : "#0C4160" },
+              // { backgroundColor: !placeInfo?.address ? "grey" : "#0C4160" },
             ]}
           >
             <Text style={styles.btntxt}>Continue</Text>

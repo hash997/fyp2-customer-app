@@ -10,6 +10,9 @@ import { RootTabScreenProps } from "../types";
 
 const OffersScreen = ({ navigation }: RootTabScreenProps<"Offers">) => {
   const { offers } = useOffer();
+
+  console.log("offers =>", offers);
+
   return (
     <View style={appStyles.container}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>

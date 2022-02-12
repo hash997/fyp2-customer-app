@@ -36,9 +36,6 @@ const AssemblingFurnitureScreen = (props: any) => {
 
   useEffect(() => {}, [currentJobRequest]);
   useEffect(() => {
-    // dispatchCurrentInquiry({
-    //   type: "clear",
-    // });
     dispatchCurrentInquiry({
       type: "update",
       payload: {

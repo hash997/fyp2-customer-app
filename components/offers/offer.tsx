@@ -46,13 +46,19 @@ const OfferCard = ({ offer }: { offer: Offer }) => {
         width: "100%",
         borderColor: "#0C4160",
         borderWidth: 1,
-        height: "25%",
+        maxHeight: "50%",
         marginVertical: 10,
         borderRadius: 10,
         padding: 15,
       }}
     >
-      <View style={{ display: "flex", flexDirection: "row", height: "50%" }}>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          marginBottom: 5,
+        }}
+      >
         <View style={{ width: "50%" }}>
           <Text style={{ fontWeight: "800", fontSize: 20, color: "#0C4160" }}>
             Offer price
@@ -69,15 +75,46 @@ const OfferCard = ({ offer }: { offer: Offer }) => {
             alignItems: "flex-end",
           }}
         >
-          <Text style={{ fontWeight: "500", marginLeft: 10, fontSize: 20 }}>
+          <Text
+            style={{
+              fontWeight: "500",
+              marginLeft: 10,
+              fontSize: 20,
+              color: "#0C4160",
+            }}
+          >
             {/* at {formatAMPM(new Date(offer?.suggestedTime))} */}
             {dayToString(new Date(offer.suggestedTime).getDay())}{" "}
             {formatAMPM(new Date(offer.suggestedTime))}
           </Text>
-          <Text style={{ fontWeight: "500", marginLeft: 10, fontSize: 20 }}>
+          <Text
+            style={{
+              fontWeight: "500",
+              color: "#0C4160",
+              marginLeft: 10,
+              fontSize: 20,
+            }}
+          >
             {/* at {formatAMPM(new Date(offer?.suggestedTime))} */}
             {monthToString(new Date(offer.suggestedTime).getMonth())}{" "}
             {new Date(offer.suggestedTime).getDate()}
+          </Text>
+        </View>
+      </View>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          maxHeight: "40%",
+          // overflow: "hidden",
+        }}
+      >
+        <View style={{}}>
+          <Text style={{ fontWeight: "800", fontSize: 15, color: "#0C4160" }}>
+            {offer?.jobRequest?.title}
+          </Text>
+          <Text style={{ fontWeight: "500", fontSize: 15, color: "#0C4160" }}>
+            {offer?.jobRequest.description}
           </Text>
         </View>
       </View>

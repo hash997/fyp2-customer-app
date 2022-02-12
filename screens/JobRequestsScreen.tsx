@@ -36,42 +36,20 @@ const JobRequestsScreen = () => {
 
   if (!jobReqs || jobReqs.length < 1) {
     return (
-      <>
-        <View
-          style={{
-            position: "absolute",
-            zIndex: 70,
-            backgroundColor: "black",
-            height: "110%",
-            width: "120%",
-            opacity: 0.3,
-          }}
+      <View style={appStyles.container}>
+        <Progress.Circle
+          size={50}
+          indeterminate={true}
+          borderWidth={3}
+          color={"white"}
         />
-        <View
-          style={{
-            position: "absolute",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 100,
-            height: "110%",
-            width: "120%",
-          }}
-        >
-          <Progress.Circle
-            size={50}
-            indeterminate={true}
-            borderWidth={3}
-            color={"white"}
-          />
-        </View>
-      </>
+      </View>
     );
   }
 
   return (
     <View style={appStyles.container}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        {/* <View> */}
         <View>
           <Text style={appStyles.title}>Your Job Requests</Text>
         </View>
@@ -79,7 +57,6 @@ const JobRequestsScreen = () => {
           jobReqs.map((jobReq: any) => (
             <JobRequest key={jobReq.id} jobReq={jobReq} />
           ))}
-        {/* </View> */}
       </ScrollView>
     </View>
   );

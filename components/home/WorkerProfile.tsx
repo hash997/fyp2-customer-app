@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, TouchableOpacity, Text } from "react-native";
 import { appStyles } from "../../styles";
 import { Entypo } from "@expo/vector-icons";
@@ -19,14 +19,20 @@ const WorkerProfile = ({
 }) => {
   const { user } = useAuth();
   const { job } = useJobRequest();
+  const [loading, setLoading] = useState(false);
+  const [isError, setIsError] = useState("");
+  const [isSuccess, setSuccess] = useState(true);
 
   if (!user) {
     return <Text>Something went wrong</Text>;
   }
 
   const handleSendJobRequest = async () => {
-    console.log("fucking clicked");
-
+    if (!user.id) {
+      setIsError("user id is undefined");
+      return;
+    }
+    setLoading(true);
     const createJobRequestToWorkerInput = {
       customerId: user.id,
       description: job.description,
@@ -50,8 +56,18 @@ const WorkerProfile = ({
           createJobRequestToWorkerInput: createJobRequestToWorkerInput,
         },
       });
-      console.log("createJobReqRes", createJobReqRes);
+      setLoading(false);
+      setSuccess(true);
+
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      navigation.navigate("Home");
     } catch (error) {
+      setLoading(false);
+      setSuccess(false);
+      setIsError(
+        "something went wrong while sending job request. please try again"
+      );
+
       console.log("error", error);
     }
   };
@@ -163,7 +179,7 @@ const WorkerProfile = ({
             <View
               style={{
                 width: "60%",
-                backgroundColor: "#0C4160",
+                backgroundColor: loading ? "grey" : "#0C4160",
                 borderRadius: 5,
                 padding: 7,
                 margin: 3,
@@ -172,7 +188,7 @@ const WorkerProfile = ({
                 alignItems: "center",
               }}
             >
-              <TouchableOpacity>
+              <TouchableOpacity disabled={loading}>
                 <Text
                   style={{ fontSize: 10, color: "white" }}
                   onPress={handleSendJobRequest}

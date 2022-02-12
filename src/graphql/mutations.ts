@@ -67,20 +67,34 @@ export const createJobRequest = /* GraphQL */ `
   mutation CreateJobRequest($createJobRequestInput: CreateJobRequestInput!) {
     createJobRequest(createJobRequestInput: $createJobRequestInput) {
       id
+      city
+      completedAt
       customerId
+      description
       location {
+        address
+        city
+        customerId
+        id
+        lat
+        lng
+        state
+      }
+      offers {
         id
         customerId
-        lng
-        lat
-        state
-        city
-        address
+        jobId
+        price
+        sentAt
+        status
+        suggestedTime
+        workerId
       }
-      city
+      sentAt
+      speciality
       status
+      totalCost
       title
-      description
     }
   }
 `;

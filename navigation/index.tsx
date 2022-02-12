@@ -13,7 +13,7 @@ import {
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
-import { ColorSchemeName, Pressable } from "react-native";
+import { Alert, ColorSchemeName, Pressable } from "react-native";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
@@ -35,10 +35,12 @@ import MovingScreen from "../screens/MovingScreen";
 import PickLocationScreen from "../screens/PickLocationScreen";
 import SignIn from "../screens/SignInScreen";
 import SignUp from "../screens/SignUpScreen";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import JobConfirmationScreen from "../screens/JobConfirmationScreen";
 import PickWorkerScreen from "../screens/PickWorkerScreen";
 import { useAuth } from "../state-store/auth-state";
+import { API } from "aws-amplify";
+import { onJobUpdated, onOfferCreated } from "../src/graphql/subscriptions";
 
 export default function Navigation({
   colorScheme,
@@ -46,14 +48,86 @@ export default function Navigation({
   colorScheme: ColorSchemeName;
 }) {
   const { user } = useAuth();
+  const [showAlert, setShowAlert] = useState({
+    newOffer: false,
+    jobAccepted: false,
+  });
 
-  useEffect(() => {}, [user]);
+  const createTwoButtonAlert = (title: string, description: string) =>
+    Alert.alert(title, description, [
+      {
+        text: "Cancel",
+        onPress: () => setShowAlert({ newOffer: false, jobAccepted: false }),
+        style: "cancel",
+      },
+      { text: "OK", onPress: () => console.log("OK Pressed") },
+    ]);
+
+  useEffect(() => {
+    if (!user) return;
+    const onOfferCreatedSub = API.graphql(
+      // @ts-ignore
+      {
+        query: onOfferCreated,
+        variables: {
+          customerId: user.id,
+        },
+      }
+      // @ts-ignore
+    ).subscribe({
+      // @ts-ignore
+      next: ({ _, value }) => {
+        // console.log("values", value);
+        setShowAlert({ newOffer: true, jobAccepted: false });
+      },
+      //@ts-ignore
+      error: (error) => {
+        console.warn(error);
+      },
+    });
+
+    const onJobAcceptedSub = API.graphql(
+      // @ts-ignore
+      {
+        query: onJobUpdated,
+        variables: {
+          customerId: user.id,
+        },
+      }
+      // @ts-ignore
+    ).subscribe({
+      // @ts-ignore
+      next: ({ _, value }) => {
+        // console.log("values", value);
+        setShowAlert({ newOffer: false, jobAccepted: true });
+      },
+      //@ts-ignore
+      error: (error) => {
+        console.warn(error);
+      },
+    });
+
+    return () => {
+      onOfferCreatedSub.unsubscribe();
+      onJobAcceptedSub.unsubscribe();
+    };
+  }, [user]);
 
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
       theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
     >
+      {showAlert.newOffer &&
+        createTwoButtonAlert(
+          "You have new offer!",
+          "See your offer in the offers tab"
+        )}
+      {showAlert.jobAccepted &&
+        createTwoButtonAlert(
+          "Someone has accepted your job request!",
+          "See your job request in the job requests tab"
+        )}
       {user ? <RootNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
