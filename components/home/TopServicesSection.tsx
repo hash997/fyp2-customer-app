@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, StyleSheet, Pressable, ScrollView } from "react-native";
+import { Text, StyleSheet, Pressable, ScrollView, Image } from "react-native";
 // import { ScrollView } from "react-native-gesture-handler";
 import { RootTabScreenProps } from "../../types";
 import { View } from "../Themed";
@@ -17,27 +17,78 @@ const TopServicesSection = ({ navigation }: any) => {
         style={{ paddingVertical: 20, paddingHorizontal: 15 }}
         showsHorizontalScrollIndicator={false}
       >
-        <Pressable
-          style={styles.box}
-          onPress={() => {
-            navigation.push("AssemblingFurniture");
-          }}
-        >
-          <Text style={styles.boxTxt}>Assembling {"\n"} Furniture</Text>
-        </Pressable>
-        <Pressable
-          style={styles.box}
-          onPress={() => {
-            navigation.push("AssemblingFurniture");
-          }}
-        >
-          <Text style={styles.boxTxt}>Moving {"\n"} In/Out</Text>
-        </Pressable>
-        <View style={styles.box}>
-          <Text style={styles.boxTxt}>Assembling {"\n"} Furniture</Text>
+        <View>
+          <Pressable
+            style={styles.box}
+            onPress={() => {
+              navigation.push("AssemblingFurniture");
+            }}
+          >
+            <Image
+              style={{ width: "100%", height: "100%", borderRadius: 8 }}
+              source={require("./../../assets/furnitureAssembly.png")}
+            />
+          </Pressable>
+          <Text style={styles.boxTxt}>Assembling Furniture</Text>
+          <Text
+            style={[
+              styles.boxTxt,
+              { fontSize: 15, marginTop: 0, color: "green" },
+            ]}
+          >
+            Available
+          </Text>
         </View>
-        <View style={styles.box}>
-          <Text style={styles.boxTxt}>Assembling {"\n"} Furniture</Text>
+        <View>
+          <Pressable style={styles.box} onPress={() => {}}>
+            <Image
+              style={{ width: "100%", height: "100%", borderRadius: 8 }}
+              source={require("./../../assets/moving.png")}
+            />
+          </Pressable>
+          <Text style={styles.boxTxt}>Moving In/Out</Text>
+          <Text
+            style={[
+              styles.boxTxt,
+              { fontSize: 15, marginTop: 0, color: "orange" },
+            ]}
+          >
+            Coming soon...
+          </Text>
+        </View>
+        <View>
+          <Pressable style={styles.box} onPress={() => {}}>
+            <Image
+              style={{ width: "100%", height: "100%", borderRadius: 8 }}
+              source={require("./../../assets/airconService.png")}
+            />
+          </Pressable>
+          <Text style={styles.boxTxt}>Aircon Service</Text>
+          <Text
+            style={[
+              styles.boxTxt,
+              { fontSize: 15, marginTop: 0, color: "orange" },
+            ]}
+          >
+            Coming soon...
+          </Text>
+        </View>
+        <View>
+          <Pressable style={styles.box} onPress={() => {}}>
+            <Image
+              style={{ width: "100%", height: "100%", borderRadius: 8 }}
+              source={require("./../../assets/plumber.png")}
+            />
+          </Pressable>
+          <Text style={styles.boxTxt}>Plumber service</Text>
+          <Text
+            style={[
+              styles.boxTxt,
+              { fontSize: 15, marginTop: 0, color: "orange" },
+            ]}
+          >
+            Coming soon...
+          </Text>
         </View>
       </ScrollView>
     </View>
@@ -62,10 +113,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   boxTxt: {
-    color: "white",
-    fontWeight: "800",
+    color: "#0C4160",
+    // width: "100%",
+    fontWeight: "500",
     fontSize: 20,
-    textAlign: "center",
+    marginTop: 5,
   },
 });
 export default TopServicesSection;

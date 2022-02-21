@@ -160,6 +160,7 @@ export const offersByCustomerId = /* GraphQL */ `
       price
       status
       suggestedTime
+      vendorsLocation
       jobRequest {
         city
         completedAt

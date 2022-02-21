@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 
 import EditScreenInfo from "../components/EditScreenInfo";
@@ -11,7 +12,17 @@ import { RootTabScreenProps } from "../types";
 const OffersScreen = ({ navigation }: RootTabScreenProps<"Offers">) => {
   const { offers } = useOffer();
 
-  console.log("offers =>", offers);
+  useEffect(() => {
+    console.log("offers.length => ", offers.length);
+  }, [offers]);
+
+  if (!offers || offers.length == 0) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Loading</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={appStyles.container}>

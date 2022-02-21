@@ -33,6 +33,7 @@ const AssemblingFurnitureScreen = (props: any) => {
   );
   const [isUrgent, setIsUrgent] = useState<string | undefined>();
   const [description, setDescription] = useState("");
+  const [isAsap, setIsAsap] = useState("");
 
   useEffect(() => {}, [currentJobRequest]);
   useEffect(() => {
@@ -40,7 +41,9 @@ const AssemblingFurnitureScreen = (props: any) => {
       type: "update",
       payload: {
         ...currentJobRequest,
-        currentStep: 1,
+        currentStep: currentJobRequest.currentStep
+          ? currentJobRequest.currentStep
+          : 1,
       },
     });
   }, []);
@@ -223,6 +226,7 @@ const AssemblingFurnitureScreen = (props: any) => {
             <TextInput
               onChangeText={setDescription}
               value={description}
+              multiline
               style={[
                 styles.boxTxt,
                 {
@@ -230,6 +234,7 @@ const AssemblingFurnitureScreen = (props: any) => {
                   height: "40%",
                   borderWidth: 1,
                   borderColor: "#eee",
+                  padding: 10,
                 },
               ]}
             />
@@ -264,7 +269,7 @@ const AssemblingFurnitureScreen = (props: any) => {
                 styles.box,
                 {
                   height: "auto",
-                  paddingVertical: 18,
+                  paddingVertical: 15,
                   borderColor: isUrgent === "urgent" ? "darkblue" : "#eee",
                 },
               ]}
@@ -282,12 +287,70 @@ const AssemblingFurnitureScreen = (props: any) => {
                 });
               }}
             >
-              <Text style={styles.bookingTypeTxt}>Urgent</Text>
+              <Text style={styles.bookingTypeTxt}>
+                Send to all nearby vendors
+              </Text>
               <Text style={styles.bookingTypeSmlTxt}>
                 Your request will be sent to all the vendors in your area, and
-                as someone accepts the job we'll notify you.
+                vendors will send you quotes with price and time.
               </Text>
+              {isUrgent === "urgent" && (
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <TouchableOpacity
+                    style={{
+                      width: "47%",
+                      marginTop: 10,
+                      padding: 10,
+                      backgroundColor:
+                        isAsap === "anytime" ? "#0C4160" : "grey",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderRadius: 10,
+                    }}
+                    onPress={() => {
+                      if (currentJobRequest.currentStep === 4) {
+                        setIsAsap("anytime");
+                        return;
+                      }
+                    }}
+                  >
+                    <Text style={{ fontSize: 20, color: "white" }}>
+                      Anytime
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{
+                      width: "47%",
+                      marginTop: 10,
+                      padding: 10,
+                      backgroundColor: isAsap === "asap" ? "#0C4160" : "grey",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderRadius: 10,
+                    }}
+                    onPress={() => {
+                      if (currentJobRequest.currentStep === 4) {
+                        setIsAsap("asap");
+
+                        return;
+                      }
+                    }}
+                  >
+                    <Text style={{ fontSize: 20, color: "white" }}>Asap</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             </Pressable>
+
             <Pressable
               style={[
                 styles.box,
@@ -311,7 +374,9 @@ const AssemblingFurnitureScreen = (props: any) => {
                 });
               }}
             >
-              <Text style={styles.bookingTypeTxt}>Book Appointment </Text>
+              <Text style={styles.bookingTypeTxt}>
+                Send to a Specific vendor near me{" "}
+              </Text>
               <Text style={styles.bookingTypeSmlTxt}>
                 Picking this option will allow you to view all the top vendors
                 in your city, and allows you to choose the one.

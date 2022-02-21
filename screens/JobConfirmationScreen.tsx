@@ -1,6 +1,12 @@
 import { API, graphqlOperation } from "aws-amplify";
 import React, { useEffect, useState } from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import SignIn from "../components/auth/SignIn";
 import { JobStatus, WorkerSpeciality } from "../src/API";
 import { createJobRequest } from "../src/graphql/mutations";
@@ -51,7 +57,6 @@ const JobConfirmationScreen = (props: any) => {
     } catch (error) {
       setErr(true);
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      console.log("error", error);
 
       setErr(false);
       setLoading(false);
@@ -96,54 +101,62 @@ const JobConfirmationScreen = (props: any) => {
               </View>
             </>
           )}
-          <View style={[appStyles.container, { justifyContent: "flex-start" }]}>
-            <View style={appStyles.TitlTxtCntr}>
-              <Text style={appStyles.title}>Confirm Job Request</Text>
-            </View>
-            <View style={appStyles.TitlTxtCntr}>
-              <Text style={styles.title}>Job Title</Text>
-              <Text style={styles.txt}>Assembling Furniture</Text>
-            </View>
-            <View style={appStyles.TitlTxtCntr}>
-              <Text style={styles.title}>Job Desciption</Text>
-              <Text style={styles.txt}>{job.description}</Text>
-            </View>
-            <View style={appStyles.TitlTxtCntr}>
-              <Text style={styles.title}>Number Of Items</Text>
-              <Text style={styles.txt}>{job.numberOfItem}</Text>
-            </View>
-            <View style={appStyles.TitlTxtCntr}>
-              <Text style={styles.title}>Items</Text>
-              {job.items.map((item) => (
-                <Text key={Math.random()} style={styles.txt}>
-                  {item}
-                </Text>
-              ))}
-            </View>
-            <View style={appStyles.TitlTxtCntr}>
-              <Text style={styles.title}>Job Location</Text>
-              <Text style={styles.txt}>{job?.location?.address}</Text>
-            </View>
-            <TouchableOpacity
-              style={[
-                appStyles.btnCntr,
-                {
-                  backgroundColor: err ? "red" : success ? "green" : "#0C4160",
-                },
-              ]}
-              onPress={() => {
-                handleCreateJobReq();
-              }}
+          <ScrollView>
+            <View
+              style={[appStyles.container, { justifyContent: "flex-start" }]}
             >
-              <Text style={appStyles.btnTxt}>
-                {err
-                  ? "something went wrong"
-                  : success
-                  ? "your job Request sent "
-                  : "Confirm"}
-              </Text>
-            </TouchableOpacity>
-          </View>
+              <View style={appStyles.TitlTxtCntr}>
+                <Text style={appStyles.title}>Confirm Job Request</Text>
+              </View>
+              <View style={appStyles.TitlTxtCntr}>
+                <Text style={styles.title}>Job Title</Text>
+                <Text style={styles.txt}>Assembling Furniture</Text>
+              </View>
+              <View style={appStyles.TitlTxtCntr}>
+                <Text style={styles.title}>Job Desciption</Text>
+                <Text style={styles.txt}>{job.description}</Text>
+              </View>
+              <View style={appStyles.TitlTxtCntr}>
+                <Text style={styles.title}>Number Of Items</Text>
+                <Text style={styles.txt}>{job.numberOfItem}</Text>
+              </View>
+              <View style={appStyles.TitlTxtCntr}>
+                <Text style={styles.title}>Items</Text>
+                {job.items.map((item) => (
+                  <Text key={Math.random()} style={styles.txt}>
+                    {item}
+                  </Text>
+                ))}
+              </View>
+              <View style={appStyles.TitlTxtCntr}>
+                <Text style={styles.title}>Job Location</Text>
+                <Text style={styles.txt}>{job?.location?.address}</Text>
+              </View>
+              <TouchableOpacity
+                style={[
+                  appStyles.btnCntr,
+                  {
+                    backgroundColor: err
+                      ? "red"
+                      : success
+                      ? "green"
+                      : "#0C4160",
+                  },
+                ]}
+                onPress={() => {
+                  handleCreateJobReq();
+                }}
+              >
+                <Text style={appStyles.btnTxt}>
+                  {err
+                    ? "something went wrong"
+                    : success
+                    ? "your job Request sent "
+                    : "Confirm"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
         </>
       )}
     </>

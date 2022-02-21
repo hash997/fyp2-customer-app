@@ -10,7 +10,7 @@ import {
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import * as Location from "expo-location";
 import * as Progress from "react-native-progress";
-import { AssemblingFurniture, RootTabScreenProps } from "../types";
+import { RootTabScreenProps } from "../types";
 import {
   useDispatchJobRequest,
   useJobRequest,
@@ -22,8 +22,10 @@ import { workersByCity } from "../src/graphql/queries";
 import { WorkerSpeciality } from "../src/API";
 import { Worker } from "../src/API";
 import { MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
+import { appStyles } from "../styles";
 
-const apiKey = "AIzaSyDJHF_JXu4QD7YeJCRgyRp-Yqez7JLR29A";
+const apiKey = "AIzaSyB8_N3rMc0Q0bozwx_8mA8EKv5BoOhMjoM";
 
 interface LngLtd {
   lat: number;
@@ -53,7 +55,6 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
 
   const getNearByWorkers = async (city: string) => {
     if (!city) {
-      console.log("no place info");
       return;
     }
     try {
@@ -65,7 +66,6 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
         },
       });
       const workers = workerRes?.data?.workersByCity;
-      console.log("workers", workers);
 
       setNearByWorkers(workers);
       dispatchCurrentJobRequest({
@@ -77,11 +77,8 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
       });
     } catch (error) {
       setErrorMsg("Error getting nearby workers");
-      console.log("some error", error);
     }
   };
-
-  console.log("current near by workers", currentJobRequest);
 
   // THIS FUNCTION IS USED TO ASK THE USER FOR PREMISSION TO GET LOCATION AND THEN GET'S THE LOCATION
   // THIS WILL GIVE THE LAT AND LNG AND SOME OTHER INFO.
@@ -140,6 +137,7 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
     const lng = jsonRes?.results[0].geometry.location.lng;
 
     const address = jsonRes?.results[0]?.formatted_address;
+
     for (let i = 0; i < jsonRes?.results[0]?.address_components.length; i++) {
       for (
         let j = 0;
@@ -170,37 +168,11 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
     getNearByWorkers(city);
   };
 
-  useEffect(() => {}, [nearbyWorkers]);
+  useEffect(() => {}, [nearbyWorkers, placeInfo]);
 
   return (
     <View style={styles.container}>
       <View style={styles.inptCtn}>
-        <View
-          style={{
-            position: "relative",
-            width: "15%",
-            borderRadius: 5,
-            backgroundColor: "white",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: 44,
-            marginRight: 5,
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("AssemblingFurniture");
-            }}
-          >
-            <MaterialIcons
-              name="chevron-left"
-              size={35}
-              color="black"
-              style={{ opacity: 0.7 }}
-            />
-          </TouchableOpacity>
-        </View>
         <GooglePlacesAutocomplete
           placeholder="Search"
           onPress={(data, details = null) => {
@@ -215,92 +187,146 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
         />
       </View>
       <View style={styles.cnt}>
-        <Text style={{ fontSize: 17, fontWeight: "600", color: "grey" }}>
-          Location
+        <Text style={appStyles.title}>Choose Location</Text>
+        <Text
+          style={{
+            fontSize: 17,
+            fontWeight: "600",
+            color: "#0C4160",
+            marginTop: 5,
+          }}
+        >
+          Address
         </Text>
-        <Text style={{ fontSize: 20, fontWeight: "bold", opacity: 0.7 }}>
-          {placeInfo?.address && placeInfo?.address}
+        <Text style={{ fontSize: 14, fontWeight: "400", color: "#0C4160" }}>
+          {placeInfo?.address}
         </Text>
-
-        <View style={styles.btnCtn}>
-          <TouchableOpacity
-            disabled={isLoading}
-            onPress={getCurretnLoc}
+        <View
+          style={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "row",
+            // justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <View style={{ width: "50%" }}>
+            <Text
+              style={{
+                fontSize: 17,
+                fontWeight: "600",
+                color: "#0C4160",
+                marginTop: 5,
+              }}
+            >
+              State
+            </Text>
+            <Text style={{ fontSize: 17, fontWeight: "400", color: "#0C4160" }}>
+              {placeInfo?.state}
+            </Text>
+          </View>
+          <View>
+            <Text
+              style={{
+                fontSize: 17,
+                fontWeight: "600",
+                color: "#0C4160",
+                marginTop: 5,
+              }}
+            >
+              City
+            </Text>
+            <Text style={{ fontSize: 17, fontWeight: "400", color: "#0C4160" }}>
+              {placeInfo?.city}
+            </Text>
+          </View>
+        </View>
+        <View>
+          <Text
             style={{
-              // position: "relative",
-              height: 70,
-              backgroundColor: isLoading ? "grey" : "#0C4160",
-              borderRadius: 10,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "row",
+              fontSize: 17,
+              fontWeight: "600",
+              color: "#0C4160",
+              marginTop: 5,
             }}
           >
-            <Text style={styles.btntxt}>Use my current location </Text>
-            <MaterialIcons
-              name="my-location"
-              size={24}
-              color="white"
-              style={{ marginLeft: 10 }}
-            />
-          </TouchableOpacity>
+            Vendors near you
+          </Text>
+          <Text style={{ fontSize: 17, fontWeight: "400", color: "#0C4160" }}>
+            {currentJobRequest?.workers?.length}
+          </Text>
         </View>
 
         <View
-          style={[
-            styles.btnCtn,
-            // {
-            //   backgroundColor:
-            //     !placeInfo?.address || currentJobRequest.workers.length === 0
-            //       ? "grey"
-            //       : "#0C4160",
-            // },
-          ]}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            flexDirection: "row",
+            alignItems: "center",
+            position: "relative",
+            bottom: 10,
+            marginTop: "auto",
+          }}
         >
-          <TouchableOpacity
-            disabled={
-              !placeInfo?.address ||
-              !currentJobRequest.workers ||
-              currentJobRequest.workers.length === 0
-            }
-            onPress={() => {
-              if (!placeInfo) return;
-              dispatchCurrentJobRequest({
-                type: "update",
-                payload: {
-                  ...currentJobRequest,
-                  currentStep: currentJobRequest.currentStep + 1,
-                  job: {
-                    ...currentJobRequest.job,
-                    location: {
-                      ...currentJobRequest.job.location,
-                      address: placeInfo?.address,
-                      city: placeInfo?.city,
-                      lat: placeInfo?.lat,
-                      lng: placeInfo?.lng,
-                      state: placeInfo?.state,
+          <View style={styles.btnCtn}>
+            <TouchableOpacity
+              disabled={isLoading}
+              onPress={getCurretnLoc}
+              style={styles.btn}
+            >
+              <Text style={styles.btntxt}>use current location</Text>
+              <FontAwesome
+                name="location-arrow"
+                size={18}
+                color="white"
+                // style={{ marginLeft: 10 }}
+              />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.btnCtn}>
+            <TouchableOpacity
+              disabled={
+                !placeInfo?.address ||
+                !currentJobRequest.workers ||
+                (currentJobRequest.workers.length === 0 &&
+                  currentJobRequest.job.bookingType === BookingType.pickWorker)
+              }
+              onPress={() => {
+                if (!placeInfo) return;
+                dispatchCurrentJobRequest({
+                  type: "update",
+                  payload: {
+                    ...currentJobRequest,
+                    currentStep: currentJobRequest.currentStep + 1,
+                    job: {
+                      ...currentJobRequest.job,
+                      location: {
+                        ...currentJobRequest.job.location,
+                        address: placeInfo?.address,
+                        city: placeInfo?.city,
+                        lat: placeInfo?.lat,
+                        lng: placeInfo?.lng,
+                        state: placeInfo?.state,
+                      },
                     },
                   },
-                },
-              });
-              if (currentJobRequest.job.bookingType === BookingType.urgent) {
-                navigation.navigate("JobConfirmation");
-                return;
-              }
-              if (
-                currentJobRequest.job.bookingType === BookingType.pickWorker
-              ) {
-                navigation.navigate("PickWorker");
-              }
-            }}
-            style={[
-              styles.btn,
-              // { backgroundColor: !placeInfo?.address ? "grey" : "#0C4160" },
-            ]}
-          >
-            <Text style={styles.btntxt}>Continue</Text>
-          </TouchableOpacity>
+                });
+                if (currentJobRequest.job.bookingType === BookingType.urgent) {
+                  navigation.navigate("JobConfirmation");
+                  return;
+                }
+                if (
+                  currentJobRequest.job.bookingType === BookingType.pickWorker
+                ) {
+                  navigation.navigate("PickWorker");
+                }
+              }}
+              style={styles.btn}
+            >
+              <Text style={styles.btntxt}>Continue</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
 
@@ -348,7 +374,6 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
         {nearbyWorkers &&
           nearbyWorkers.length > 0 &&
           nearbyWorkers.map((wrkr) => {
-            console.log("wrkr", +wrkr.lat);
             return (
               <Marker
                 key={wrkr.id}
@@ -386,18 +411,15 @@ const styles = StyleSheet.create({
     height: Dimensions.get("window").height,
   },
   btnCtn: {
-    // position: "absolute",
-    // position: "relative",
-    // bottom: 50,
     marginTop: 15,
     zIndex: 100,
-    width: "100%",
+    width: "49%",
   },
   btn: {
     marginTop: 10,
     marginBottom: 10,
     width: "100%",
-    height: 70,
+    height: 50,
     backgroundColor: "#0C4160",
     borderRadius: 10,
     display: "flex",
@@ -405,8 +427,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   btntxt: {
-    fontSize: 20,
-    fontWeight: "bold",
+    fontSize: 15,
+    fontWeight: "400",
     color: "white",
   },
   inptCtn: {
@@ -414,24 +436,22 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    top: 70,
+    top: 10,
     zIndex: 100,
-    right: 20,
+    // right: 20,
     width: "100%",
     // height: 100,
   },
   cnt: {
     position: "absolute",
-    // justifyContent: "center",
-    alignItems: "center",
-    height: "40%",
-    width: "110%",
+    height: "42%",
+    width: "105%",
     backgroundColor: "white",
-    bottom: 0,
-    borderTopRightRadius: 30,
-    borderTopLeftRadius: 30,
+    bottom: 10,
+    borderRadius: 30,
     zIndex: 100,
-    padding: 15,
+    padding: 20,
+    paddingBottom: 0,
   },
 });
 

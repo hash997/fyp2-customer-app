@@ -1,32 +1,35 @@
 import * as React from "react";
-import { StyleSheet, ScrollView, TextInput } from "react-native";
-// import { ScrollView, TextInput } from "react-native-gesture-handler";
+import { useEffect } from "react";
+import { StyleSheet, ScrollView } from "react-native";
 import HandymanSection from "../components/home/HandymanSection";
 import ProfessionalsSections from "../components/home/ProfessionalsSection";
 import TopServicesSection from "../components/home/TopServicesSection";
 import { View } from "../components/Themed";
+import {
+  useDispatchJobRequest,
+  useJobRequest,
+} from "../state-store/job-request-state";
 import { RootTabScreenProps } from "../types";
 
 const HomeScreen = ({ navigation }: RootTabScreenProps<"Home">) => {
+  const dispatchCurrentInquiry = useDispatchJobRequest();
+  const currentJobRequest = useJobRequest();
+
+  useEffect(() => {
+    dispatchCurrentInquiry({
+      type: "clear",
+    });
+    // dispatchCurrentInquiry({
+    //   type: "update",
+    //   payload: {
+    //     ...currentJobRequest,
+    //     currentStep: 1,
+    //   },
+    // });
+  }, []);
+
   return (
     <View style={styles.container}>
-      {/* <View
-        lightColor="white"
-        darkColor="rgba(255,255,255,0.1)"
-        style={styles.txtInputContainer}
-      >
-        <TextInput
-          style={{
-            width: "100%",
-            height: 50,
-            borderWidth: 1,
-            borderRadius: 10,
-            borderColor: "#eee",
-            paddingLeft: 15,
-          }}
-          placeholder="Search"
-        />
-      </View> */}
       <ScrollView>
         <TopServicesSection navigation={navigation} />
         <HandymanSection />

@@ -1,5 +1,12 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  Image,
+} from "react-native";
 // import { ScrollView } from "react-native-gesture-handler";
 
 const ProfessionalsSections = () => {
@@ -11,17 +18,39 @@ const ProfessionalsSections = () => {
         style={{ paddingVertical: 20, paddingHorizontal: 15 }}
         showsHorizontalScrollIndicator={false}
       >
-        <View style={styles.box}>
-          <Text style={styles.boxTxt}>Plumping</Text>
+        <View>
+          <Pressable style={styles.box} onPress={() => {}}>
+            <Image
+              style={{ width: "100%", height: "100%", borderRadius: 8 }}
+              source={require("./../../assets/plumber.png")}
+            />
+          </Pressable>
+          <Text style={styles.boxTxt}>Plumber service</Text>
+          <Text
+            style={[
+              styles.boxTxt,
+              { fontSize: 15, marginTop: 0, color: "orange" },
+            ]}
+          >
+            Coming soon...
+          </Text>
         </View>
-        <View style={styles.box}>
-          <Text style={styles.boxTxt}>Aircon {"\n"} Services</Text>
-        </View>
-        <View style={styles.box}>
-          <Text style={styles.boxTxt}>Electrician </Text>
-        </View>
-        <View style={styles.box}>
-          <Text style={styles.boxTxt}>Assembling {"\n"} Furniture</Text>
+        <View>
+          <Pressable style={styles.box} onPress={() => {}}>
+            <Image
+              style={{ width: "100%", height: "100%", borderRadius: 8 }}
+              source={require("./../../assets/airconService.png")}
+            />
+          </Pressable>
+          <Text style={styles.boxTxt}>Aircon Service</Text>
+          <Text
+            style={[
+              styles.boxTxt,
+              { fontSize: 15, marginTop: 0, color: "orange" },
+            ]}
+          >
+            Coming soon...
+          </Text>
         </View>
       </ScrollView>
     </View>
@@ -39,17 +68,18 @@ const styles = StyleSheet.create({
     width: 200,
     height: 140,
     marginRight: 20,
-    backgroundColor: "#0074B7",
+    backgroundColor: "#738FA7",
     borderRadius: 20,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
   },
   boxTxt: {
-    color: "white",
-    fontWeight: "800",
+    color: "#0C4160",
+    // width: "100%",
+    fontWeight: "500",
     fontSize: 20,
-    textAlign: "center",
+    marginTop: 5,
   },
 });
 export default ProfessionalsSections;

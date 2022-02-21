@@ -67,8 +67,6 @@ const WorkerProfile = ({
       setIsError(
         "something went wrong while sending job request. please try again"
       );
-
-      console.log("error", error);
     }
   };
   return (

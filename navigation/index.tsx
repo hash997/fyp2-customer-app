@@ -41,6 +41,7 @@ import PickWorkerScreen from "../screens/PickWorkerScreen";
 import { useAuth } from "../state-store/auth-state";
 import { API } from "aws-amplify";
 import { onJobUpdated, onOfferCreated } from "../src/graphql/subscriptions";
+import { useDispatchOffer, useOffer } from "../state-store/offers-provider";
 
 export default function Navigation({
   colorScheme,
@@ -48,6 +49,8 @@ export default function Navigation({
   colorScheme: ColorSchemeName;
 }) {
   const { user } = useAuth();
+  const currentOffers = useOffer();
+  const dispatchCurrentOffers = useDispatchOffer();
   const [showAlert, setShowAlert] = useState({
     newOffer: false,
     jobAccepted: false,
@@ -60,7 +63,10 @@ export default function Navigation({
         onPress: () => setShowAlert({ newOffer: false, jobAccepted: false }),
         style: "cancel",
       },
-      { text: "OK", onPress: () => console.log("OK Pressed") },
+      {
+        text: "OK",
+        onPress: () => setShowAlert({ newOffer: false, jobAccepted: false }),
+      },
     ]);
 
   useEffect(() => {
@@ -77,8 +83,15 @@ export default function Navigation({
     ).subscribe({
       // @ts-ignore
       next: ({ _, value }) => {
-        // console.log("values", value);
         setShowAlert({ newOffer: true, jobAccepted: false });
+
+        dispatchCurrentOffers({
+          type: "update",
+          payload: {
+            ...currentOffers,
+            offers: [...currentOffers.offers, value.data.onOfferCreated],
+          },
+        });
       },
       //@ts-ignore
       error: (error) => {
@@ -98,7 +111,6 @@ export default function Navigation({
     ).subscribe({
       // @ts-ignore
       next: ({ _, value }) => {
-        // console.log("values", value);
         setShowAlert({ newOffer: false, jobAccepted: true });
       },
       //@ts-ignore
@@ -112,6 +124,8 @@ export default function Navigation({
       onJobAcceptedSub.unsubscribe();
     };
   }, [user]);
+
+  useEffect(() => {}, [currentOffers]);
 
   return (
     <NavigationContainer
@@ -165,8 +179,8 @@ const RootNavigator = () => {
         <Stack.Screen
           name="PickLocation"
           options={() => ({
-            headerShown: false,
-            // title: "Pick your locaiton",
+            headerShown: true,
+            title: "Pick your location",
           })}
           component={PickLocationScreen}
         />
@@ -222,6 +236,7 @@ function BottomTabNavigator() {
         component={HomeScreen}
         options={({ navigation }: RootTabScreenProps<"Home">) => ({
           title: "Home",
+
           tabBarIcon: ({ color }) => (
             <Ionicons name="home" size={24} color={color} />
           ),

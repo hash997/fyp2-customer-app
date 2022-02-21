@@ -69,6 +69,7 @@ export type Offer = {
   status: OfferStatus;
   suggestedTime: string;
   jobRequest: JobRequest;
+  vendorsLocation: string;
 };
 
 export enum OfferStatus {

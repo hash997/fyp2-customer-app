@@ -71,6 +71,7 @@ export const createJobRequest = /* GraphQL */ `
       completedAt
       customerId
       description
+
       location {
         address
         city

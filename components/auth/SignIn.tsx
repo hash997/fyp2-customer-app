@@ -21,7 +21,7 @@ import Auth from "@aws-amplify/auth";
 import { useState } from "react";
 
 const SigninSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email").required("Required"),
+  email: Yup.string(),
   password: Yup.string()
     .min(8)
     .required()

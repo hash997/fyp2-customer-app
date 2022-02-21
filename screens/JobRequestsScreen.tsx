@@ -23,9 +23,7 @@ const JobRequestsScreen = () => {
         },
       });
       setJobReqs(jobReqResp?.data?.jobsByCustomerId);
-    } catch (error) {
-      console.log("shit went south while getting customers job reqs =>", error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {

@@ -9,6 +9,10 @@ import { useAuth } from "../../state-store/auth-state";
 const OfferCard = ({ offer }: { offer: Offer }) => {
   const { user } = useAuth();
 
+  if (!offer) {
+    return <Text>No job request for this job</Text>;
+  }
+
   const handleAcceptOffer = async () => {
     if (!user || !offer.id) return;
     try {
@@ -21,7 +25,6 @@ const OfferCard = ({ offer }: { offer: Offer }) => {
           },
         },
       });
-      console.log("updateOfferRes", updateOfferRes);
 
       const createAptRes = await API.graphql({
         query: createAppointment,
@@ -34,11 +37,7 @@ const OfferCard = ({ offer }: { offer: Offer }) => {
           },
         },
       });
-
-      console.log("createAptRes", createAptRes);
-    } catch (error) {
-      console.log("error", error);
-    }
+    } catch (error) {}
   };
   return (
     <View
@@ -101,6 +100,7 @@ const OfferCard = ({ offer }: { offer: Offer }) => {
           </Text>
         </View>
       </View>
+
       <View
         style={{
           display: "flex",
@@ -113,8 +113,11 @@ const OfferCard = ({ offer }: { offer: Offer }) => {
           <Text style={{ fontWeight: "800", fontSize: 15, color: "#0C4160" }}>
             {offer?.jobRequest?.title}
           </Text>
+          <Text style={{ fontWeight: "800", fontSize: 15, color: "#0C4160" }}>
+            Vendor's location: {offer?.vendorsLocation}
+          </Text>
           <Text style={{ fontWeight: "500", fontSize: 15, color: "#0C4160" }}>
-            {offer?.jobRequest.description}
+            {offer.jobRequest?.description}
           </Text>
         </View>
       </View>
@@ -141,7 +144,7 @@ const OfferCard = ({ offer }: { offer: Offer }) => {
           <Text style={{ color: "white", fontSize: 20 }}>
             {offer.status === OfferStatus.ACCEPTED
               ? "Offer Accepted"
-              : "Accepte offer"}
+              : "Accept offer"}
           </Text>
         </TouchableOpacity>
       </View>
