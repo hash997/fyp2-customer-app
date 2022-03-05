@@ -14,6 +14,9 @@ import {
 } from "../state-store/job-request-state";
 import { MaterialIcons } from "@expo/vector-icons";
 import { BookingType } from "../job-request-types";
+import DateTimePicker, {
+  WindowsDatePickerChangeEvent,
+} from "@react-native-community/datetimepicker";
 
 const items = [1, 2, 3, 4];
 const furnitureArr = ["Desk or Table", "Bed Frame", "Chair", "Other"];
@@ -34,6 +37,23 @@ const AssemblingFurnitureScreen = (props: any) => {
   const [isUrgent, setIsUrgent] = useState<string | undefined>();
   const [description, setDescription] = useState("");
   const [isAsap, setIsAsap] = useState("");
+  const [date, setDate] = useState(
+    new Date(
+      new Date(
+        `${new Date().getFullYear()}/${new Date().getMonth() + 1}/${
+          new Date().getDate() + 2
+        }`
+      ).setHours(10, 0, 0, 0)
+    )
+  );
+
+  const onChange = (
+    event: WindowsDatePickerChangeEvent,
+    selectedDate: Date
+  ) => {
+    const currentDate = selectedDate || date;
+    setDate(currentDate);
+  };
 
   useEffect(() => {}, [currentJobRequest]);
   useEffect(() => {
@@ -295,59 +315,105 @@ const AssemblingFurnitureScreen = (props: any) => {
                 vendors will send you quotes with price and time.
               </Text>
               {isUrgent === "urgent" && (
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <TouchableOpacity
-                    style={{
-                      width: "47%",
-                      marginTop: 10,
-                      padding: 10,
-                      backgroundColor:
-                        isAsap === "anytime" ? "#0C4160" : "grey",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      borderRadius: 10,
-                    }}
-                    onPress={() => {
-                      if (currentJobRequest.currentStep === 4) {
-                        setIsAsap("anytime");
-                        return;
-                      }
-                    }}
-                  >
-                    <Text style={{ fontSize: 20, color: "white" }}>
-                      Anytime
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={{
-                      width: "47%",
-                      marginTop: 10,
-                      padding: 10,
-                      backgroundColor: isAsap === "asap" ? "#0C4160" : "grey",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      borderRadius: 10,
-                    }}
-                    onPress={() => {
-                      if (currentJobRequest.currentStep === 4) {
-                        setIsAsap("asap");
+                <>
+                  {isAsap === "pickTime" && (
+                    <View>
+                      <View
+                        style={{
+                          marginBottom: 10,
+                        }}
+                      >
+                        <DateTimePicker
+                          testID="dateTimePicker"
+                          value={date}
+                          mode={"date"}
+                          maximumDate={
+                            new Date(
+                              new Date().getFullYear(),
+                              new Date().getMonth() + 1,
+                              new Date().getDate() + 1
+                            )
+                          }
+                          minimumDate={new Date()}
+                          // @ts-ignore
+                          onChange={onChange}
+                        />
+                      </View>
 
-                        return;
-                      }
+                      <View
+                        style={{
+                          display: "flex",
+                          justifyContent: "flex-start",
+                          // marginRight: 100,
+                        }}
+                      >
+                        <DateTimePicker
+                          testID="dateTimePicker"
+                          value={date}
+                          mode={"time"}
+                          is24Hour={true}
+                          // @ts-ignore
+                          onChange={onChange}
+                        />
+                      </View>
+                    </View>
+                  )}
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
                     }}
                   >
-                    <Text style={{ fontSize: 20, color: "white" }}>Asap</Text>
-                  </TouchableOpacity>
-                </View>
+                    <TouchableOpacity
+                      style={{
+                        width: "47%",
+                        marginTop: 10,
+                        padding: 10,
+                        backgroundColor:
+                          isAsap === "pickTime" ? "#0C4160" : "grey",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        borderRadius: 10,
+                      }}
+                      onPress={() => {
+                        if (currentJobRequest.currentStep === 4) {
+                          setIsAsap("pickTime");
+                          return;
+                        }
+                      }}
+                    >
+                      <Text style={{ fontSize: 20, color: "white" }}>
+                        Pick Time
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{
+                        width: "47%",
+                        marginTop: 10,
+                        padding: 10,
+                        backgroundColor: isAsap === "asap" ? "#0C4160" : "grey",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        borderRadius: 10,
+                      }}
+                      onPress={() => {
+                        if (currentJobRequest.currentStep === 4) {
+                          setIsAsap("ur");
+
+                          return;
+                        }
+                      }}
+                    >
+                      <Text style={{ fontSize: 20, color: "white" }}>
+                        Urgent
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
               )}
             </Pressable>
 

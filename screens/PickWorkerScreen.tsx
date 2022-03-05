@@ -12,9 +12,6 @@ import { appStyles } from "../styles";
 import { dayToString, months } from "../helpers/time";
 
 const PickWorkerScreen = (props: any) => {
-  const [nearByWorkers, setNearByWorkers] = useState<Worker[] | undefined>();
-  const [loading, setLoading] = useState(false);
-  const [appointment, setAppointment] = useState<Date | undefined>(undefined);
   const [step, setStep] = useState(0);
   const { job } = useJobRequest();
   const currentJobRequest = useJobRequest();
@@ -28,14 +25,6 @@ const PickWorkerScreen = (props: any) => {
     const currentDate = selectedDate || date;
     setDate(currentDate);
   };
-
-  if (nearByWorkers?.length === 0) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>No near by workers...</Text>
-      </View>
-    );
-  }
 
   return (
     <View style={{ flex: 1, backgroundColor: "white", padding: 20 }}>

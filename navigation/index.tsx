@@ -30,6 +30,7 @@ import HomeScreen from "../screens/HomeScreen";
 import JobRequestsScreen from "../screens/JobRequestsScreen";
 import OffersScreen from "../screens/OffersScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import NotificationScreen from "../screens/NotificationScreen";
 import AssemblingFurnitureScreen from "../screens/AssemblingFurnitureScreen";
 import MovingScreen from "../screens/MovingScreen";
 import PickLocationScreen from "../screens/PickLocationScreen";
@@ -237,24 +238,24 @@ function BottomTabNavigator() {
         options={({ navigation }: RootTabScreenProps<"Home">) => ({
           title: "Home",
 
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="home" size={24} color={color} />
-          ),
-          headerRight: () => (
-            <Pressable
-              onPress={() => navigation.navigate("Modal")}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1,
-              })}
-            >
-              <Ionicons
-                name="person-circle"
-                size={35}
-                color="#055C9D"
-                style={{ marginRight: 15 }}
-              />
-            </Pressable>
-          ),
+          // tabBarIcon: ({ color }) => (
+          //   <Ionicons name="home" size={24} color={color} />
+          // ),
+          // headerRight: () => (
+          //   <Pressable
+          //     onPress={() => navigation.navigate("Modal")}
+          //     style={({ pressed }) => ({
+          //       opacity: pressed ? 0.5 : 1,
+          //     })}
+          //   >
+          //     <Ionicons
+          //       name="person-circle"
+          //       size={35}
+          //       color="#055C9D"
+          //       style={{ marginRight: 15 }}
+          //     />
+          //   </Pressable>
+          // ),
         })}
       />
       <BottomTab.Screen
@@ -279,7 +280,7 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Notifications"
-        component={SettingsScreen}
+        component={NotificationScreen}
         options={{
           title: "Notifications",
           tabBarIcon: ({ color }) => (
