@@ -48,8 +48,6 @@ export const OfferProvider: React.FC = ({ children }) => {
         },
       });
 
-      console.log("offersRes => ", offersRes.data.offersByCustomerId);
-
       dispatch({
         type: "update",
         payload: {

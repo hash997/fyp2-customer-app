@@ -18,6 +18,8 @@ export interface JobRequest {
   items: string[];
   location: Location;
   worker?: WorkerDetails;
+  isUrgent: boolean | undefined;
+  preferedTime: string | null;
 }
 
 export interface WorkerDetails {

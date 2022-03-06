@@ -12,9 +12,7 @@ import { RootTabScreenProps } from "../types";
 const OffersScreen = ({ navigation }: RootTabScreenProps<"Offers">) => {
   const { offers } = useOffer();
 
-  useEffect(() => {
-    console.log("offers.length => ", offers.length);
-  }, [offers]);
+  useEffect(() => {}, [offers]);
 
   if (!offers || offers.length == 0) {
     return (

@@ -162,12 +162,12 @@ const RootNavigator = () => {
         component={LandingScreen}
         options={{ headerShown: false }}
       /> */}
-      <Stack.Screen
-        name="Root"
-        component={BottomTabNavigator}
-        options={{ headerShown: false }}
-      />
       <Stack.Group>
+        <Stack.Screen
+          name="Root"
+          component={BottomTabNavigator}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="AssemblingFurniture"
           options={() => ({
@@ -238,9 +238,9 @@ function BottomTabNavigator() {
         options={({ navigation }: RootTabScreenProps<"Home">) => ({
           title: "Home",
 
-          // tabBarIcon: ({ color }) => (
-          //   <Ionicons name="home" size={24} color={color} />
-          // ),
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="home" size={24} color={color} />
+          ),
           // headerRight: () => (
           //   <Pressable
           //     onPress={() => navigation.navigate("Modal")}

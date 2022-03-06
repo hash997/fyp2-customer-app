@@ -44,7 +44,7 @@ const SignupSchema = Yup.object().shape({
     .max(20, "Must be 20 characters or less")
     .required("Required"),
 
-  email: Yup.string().email("Invalid email").required("Required"),
+  email: Yup.string().required().email("Invalid email").required("Required"),
   phoneNumber: Yup.string()
     .required()
     .matches(
@@ -72,6 +72,7 @@ const SignUp = ({ navigation }: RootStackScreenProps<"SignUp">) => {
   const [error, setError] = useState(false);
   const [isConfirmationCode, setIsConfirmationCode] = useState(false);
   const [authRes, setAuthRes] = useState<any>();
+  const [creds, setCreds] = useState({ email: "", password: "" });
 
   const createUserInBD = async (values: signUpVals) => {
     try {
@@ -89,8 +90,10 @@ const SignUp = ({ navigation }: RootStackScreenProps<"SignUp">) => {
       });
       const createCstmrData = await createCstmrRes;
 
-      createCredForCstmr(values, createCstmrData);
-    } catch (error) {}
+      const creatCredRes = await createCredForCstmr(values, createCstmrData);
+    } catch (error) {
+      console.log("error from createing customer", error);
+    }
   };
 
   const createCredForCstmr = async (
@@ -99,7 +102,7 @@ const SignUp = ({ navigation }: RootStackScreenProps<"SignUp">) => {
   ) => {
     try {
       const newCstmrToBeSavedOnCognito = {
-        username: `${values.firstName}`,
+        username: `${values.firstName}${values.lastName}`,
         password: values.password,
         attributes: {
           email: values.email,
@@ -108,16 +111,23 @@ const SignUp = ({ navigation }: RootStackScreenProps<"SignUp">) => {
         },
       };
       const { user } = await Auth.signUp(newCstmrToBeSavedOnCognito);
+      setCreds({ email: values.email, password: values.password });
       setAuthRes(user);
-    } catch (error) {}
+      setIsConfirmationCode(true);
+    } catch (error) {
+      setError(true);
+      console.log("shit went south creating credentials for user", error);
+    }
   };
 
   const submitValidationCode = async (code: string) => {
     try {
       const confrimRes = await Auth.confirmSignUp(authRes?.username, code);
-      navigation.navigate("Root");
+      const siginInRes = await Auth.signIn(creds.email, creds.password);
     } catch (error) {
       setError(true);
+      console.log("errrorrrrrr =< ", error);
+
       return error;
     }
   };
@@ -137,10 +147,9 @@ const SignUp = ({ navigation }: RootStackScreenProps<"SignUp">) => {
                 onSubmit={async (values) => {
                   try {
                     setSubmitting(true);
-                    createUserInBD(values);
+                    const cerateUsrRes = await createUserInBD(values);
                     // createCredForCstmr(values);
                     setSubmitting(false);
-                    setIsConfirmationCode(true);
                     setSuccess(true);
                   } catch (error) {
                     setSubmitting(false);
@@ -308,7 +317,7 @@ const SignUp = ({ navigation }: RootStackScreenProps<"SignUp">) => {
                       onPress={() => handleSubmit()}
                       style={appStyles.btnCntr}
                     >
-                      <Text style={appStyles.btnTxt}>SignUp</Text>
+                      <Text style={appStyles.btnTxt}>Sign up</Text>
                     </TouchableOpacity>
                   </>
                 )}

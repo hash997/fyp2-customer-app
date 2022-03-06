@@ -19,8 +19,8 @@ export const appStyles = StyleSheet.create({
     color: "#0C4160",
   },
   btnCntr: {
-    marginTop: 15,
-    marginBottom: 10,
+    marginTop: 10,
+    marginBottom: 5,
     width: "100%",
     // height: 50,
     backgroundColor: "#0C4160",
@@ -28,13 +28,13 @@ export const appStyles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
+    padding: 10,
     // padding: 40,
   },
   btnTxt: {
     fontSize: 25,
     color: "white",
-    fontWeight: "700",
+    fontWeight: "500",
   },
   txtInputCntr: {
     width: "100%",
@@ -46,7 +46,7 @@ export const appStyles = StyleSheet.create({
   },
   txtInput: {
     textAlignVertical: "center",
-    padding: 15,
+    padding: 11,
   },
   signInBtnCntr: {
     width: "100%",
