@@ -257,7 +257,7 @@ const AssemblingFurnitureScreen = (props: any) => {
             {currentJobRequest.currentStep === 3 && (
               <>
                 <Text style={styles.title}>
-                  Brefily explain the job you need done
+                  Briefly explain the job you need done
                 </Text>
                 <TextInput
                   onChangeText={setDescription}

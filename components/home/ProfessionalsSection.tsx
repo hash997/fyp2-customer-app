@@ -42,7 +42,7 @@ const ProfessionalsSections = () => {
               source={require("./../../assets/airconService.png")}
             />
           </Pressable>
-          <Text style={styles.boxTxt}>Aircon Service</Text>
+          <Text style={styles.boxTxt}>Aircond Service</Text>
           <Text
             style={[
               styles.boxTxt,

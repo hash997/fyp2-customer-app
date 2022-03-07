@@ -117,7 +117,7 @@ const SignIn = ({ navigation }: any) => {
                   style={appStyles.btnCntr}
                   disabled={isSubmitting}
                 >
-                  <Text style={appStyles.btnTxt}>SignIn</Text>
+                  <Text style={appStyles.btnTxt}>Sign in</Text>
                 </TouchableOpacity>
               </>
             )}

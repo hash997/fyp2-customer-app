@@ -113,7 +113,7 @@ const JobConfirmationScreen = (props: any) => {
                 <Text style={styles.txt}>Assembling Furniture</Text>
               </View>
               <View style={appStyles.TitlTxtCntr}>
-                <Text style={styles.title}>Job Desciption</Text>
+                <Text style={styles.title}>Job Description</Text>
                 <Text style={styles.txt}>{job.description}</Text>
               </View>
               <View style={appStyles.TitlTxtCntr}>

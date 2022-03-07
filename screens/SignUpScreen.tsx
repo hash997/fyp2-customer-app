@@ -388,7 +388,7 @@ const SignUp = ({ navigation }: RootStackScreenProps<"SignUp">) => {
             )}
             <View style={appStyles.signInBtnCntr}>
               <TouchableOpacity onPress={() => navigation.replace("SignIn")}>
-                <Text style={appStyles.linkText}>SignIn instead</Text>
+                <Text style={appStyles.linkText}>Sign in instead</Text>
               </TouchableOpacity>
             </View>
           </View>
