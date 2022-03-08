@@ -336,7 +336,11 @@ const AssemblingFurnitureScreen = (props: any) => {
                         <View>
                           <View
                             style={{
-                              marginBottom: 10,
+                              marginTop: 10,
+                              position: "relative",
+                              display: "flex",
+                              flexDirection: "row",
+                              alignItems: "center",
                             }}
                           >
                             <DateTimePicker
@@ -353,16 +357,13 @@ const AssemblingFurnitureScreen = (props: any) => {
                               minimumDate={new Date()}
                               // @ts-ignore
                               onChange={onChange}
+                              style={{
+                                // position: "absolute",
+                                // marginRight: "auto",
+                                paddingHorizontal: 50,
+                                // marginVertical: 10,
+                              }}
                             />
-                          </View>
-
-                          <View
-                            style={{
-                              display: "flex",
-                              justifyContent: "flex-start",
-                              // marginRight: 100,
-                            }}
-                          >
                             <DateTimePicker
                               testID="dateTimePicker"
                               value={date}
@@ -370,8 +371,18 @@ const AssemblingFurnitureScreen = (props: any) => {
                               is24Hour={true}
                               // @ts-ignore
                               onChange={onChange}
+                              style={{
+                                // position: "absolute",
+                                // marginRight: "auto",
+                                paddingHorizontal: 50,
+                                // marginVertical: 10,
+                              }}
                             />
                           </View>
+                          <Text style={{ marginTop: 5, fontSize: 12 }}>
+                            Please pick a time you prefer the vendor come and do
+                            the job.
+                          </Text>
                         </View>
                       )}
                       <View
@@ -568,8 +579,6 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     width: "17%",
     height: 50,
-    // borderWidth: 2,
-    // borderColor: "#eee",
     borderRadius: 10,
     display: "flex",
     justifyContent: "center",

@@ -43,9 +43,12 @@ const JobConfirmationScreen = (props: any) => {
             city: job.location.city,
             description: job.description,
             speciality: WorkerSpeciality.HANDYMAN,
+            isUrgent: !job.preferedTime ? false : true,
+            preferedTime: job.preferedTime ? job.preferedTime : new Date(),
           },
         })
       );
+
       setSuccess(true);
 
       setLoading(false);
@@ -56,6 +59,8 @@ const JobConfirmationScreen = (props: any) => {
       props.navigation.navigate("Home");
     } catch (error) {
       setErr(true);
+      console.log("error -> ", error);
+
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       setErr(false);
