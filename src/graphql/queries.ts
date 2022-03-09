@@ -172,10 +172,45 @@ export const offersByCustomerId = /* GraphQL */ `
         status
         title
         totalCost
+        preferedTime
       }
     }
   }
 `;
+
+export const jobsToWorkerByCustomerId = /* GraphQL */ `
+  query jobsToWorkerByCustomerId($customerId: ID!) {
+    jobsToWorkerByCustomerId(customerId: $customerId) {
+      id
+      customerId
+      location {
+        id
+        lng
+        lat
+        city
+      }
+      customer {
+        fName
+        lName
+      }
+      worker {
+        hourlyRate
+        fName
+        lName
+        speciality
+      }
+      description
+      title
+      sentAt
+      status
+      totalCost
+      workerId
+      completedAt
+      time
+    }
+  }
+`;
+
 export const jobsByWorkerId = /* GraphQL */ `
   query JobsByWorkerId($workerId: ID!) {
     jobsByWorkerId(workerId: $workerId) {

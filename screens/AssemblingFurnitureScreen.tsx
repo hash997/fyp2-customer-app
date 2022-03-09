@@ -61,6 +61,10 @@ const AssemblingFurnitureScreen = (props: any) => {
 
   useEffect(() => {}, [currentJobRequest]);
   useEffect(() => {
+    console.log("mothafuckingDate =>", date);
+  }, [date]);
+
+  useEffect(() => {
     dispatchCurrentInquiry({
       type: "update",
       payload: {
@@ -318,6 +322,8 @@ const AssemblingFurnitureScreen = (props: any) => {
                         job: {
                           ...currentJobRequest.job,
                           bookingType: BookingType.urgent,
+                          isUrgent: isAsap === "urgent" ? true : false,
+                          preferedTime: date.toISOString(),
                         },
                       },
                     });
@@ -341,11 +347,14 @@ const AssemblingFurnitureScreen = (props: any) => {
                               display: "flex",
                               flexDirection: "row",
                               alignItems: "center",
+                              // backgroundColor: "grey",
+                              justifyContent: "space-between",
                             }}
                           >
                             <DateTimePicker
                               testID="dateTimePicker"
                               value={date}
+                              placeholderText={"pick date"}
                               mode={"date"}
                               maximumDate={
                                 new Date(
@@ -358,10 +367,8 @@ const AssemblingFurnitureScreen = (props: any) => {
                               // @ts-ignore
                               onChange={onChange}
                               style={{
-                                // position: "absolute",
-                                // marginRight: "auto",
-                                paddingHorizontal: 50,
-                                // marginVertical: 10,
+                                paddingHorizontal: 40,
+                                // backgroundColor: "blue",
                               }}
                             />
                             <DateTimePicker
@@ -372,10 +379,7 @@ const AssemblingFurnitureScreen = (props: any) => {
                               // @ts-ignore
                               onChange={onChange}
                               style={{
-                                // position: "absolute",
-                                // marginRight: "auto",
                                 paddingHorizontal: 50,
-                                // marginVertical: 10,
                               }}
                             />
                           </View>
@@ -408,6 +412,18 @@ const AssemblingFurnitureScreen = (props: any) => {
                           onPress={() => {
                             if (currentJobRequest.currentStep === 4) {
                               setIsAsap("pickTime");
+                              dispatchCurrentInquiry({
+                                type: "update",
+                                payload: {
+                                  ...currentJobRequest,
+                                  job: {
+                                    ...currentJobRequest.job,
+                                    bookingType: BookingType.urgent,
+                                    isUrgent: false,
+                                    preferedTime: date.toISOString(),
+                                  },
+                                },
+                              });
                               return;
                             }
                           }}
@@ -431,7 +447,18 @@ const AssemblingFurnitureScreen = (props: any) => {
                           onPress={() => {
                             if (currentJobRequest.currentStep === 4) {
                               setIsAsap("urgent");
-
+                              dispatchCurrentInquiry({
+                                type: "update",
+                                payload: {
+                                  ...currentJobRequest,
+                                  job: {
+                                    ...currentJobRequest.job,
+                                    bookingType: BookingType.urgent,
+                                    isUrgent: true,
+                                    preferedTime: date.toISOString(),
+                                  },
+                                },
+                              });
                               return;
                             }
                           }}

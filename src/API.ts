@@ -35,6 +35,8 @@ export type JobRequest = {
   offers?: Array<Offer | null> | null;
   sentAt: string;
   completedAt?: string | null;
+  isUrgent: boolean;
+  preferedTime: string;
 };
 
 export type Location = {
@@ -70,6 +72,26 @@ export type Offer = {
   suggestedTime: string;
   jobRequest: JobRequest;
   vendorsLocation: string;
+  preferedTime: string;
+  isUrgent: boolean;
+};
+
+export type JobRequestToWorker = {
+  __typename: "JobRequest";
+  id: string;
+  customerId: string;
+  workerId: string;
+  location: Location;
+  status: JobStatus;
+  title: string;
+  description: string;
+  totalCost: number;
+  offers?: Array<Offer | null> | null;
+  customer: Customer;
+  worker: Worker;
+  sentAt: string;
+  completedAt?: string | null;
+  time: Date;
 };
 
 export enum OfferStatus {

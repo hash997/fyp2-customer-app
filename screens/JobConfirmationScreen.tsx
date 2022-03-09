@@ -22,6 +22,8 @@ const JobConfirmationScreen = (props: any) => {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  console.log("fucking job ->", job);
+
   const handleCreateJobReq = async () => {
     if (!user) throw new Error("user is not defined");
     try {
@@ -43,8 +45,10 @@ const JobConfirmationScreen = (props: any) => {
             city: job.location.city,
             description: job.description,
             speciality: WorkerSpeciality.HANDYMAN,
-            isUrgent: !job.preferedTime ? false : true,
-            preferedTime: job.preferedTime ? job.preferedTime : new Date(),
+            isUrgent: job.isUrgent,
+            preferedTime: !job.isUrgent
+              ? job.preferedTime
+              : new Date(new Date().setFullYear(1996)),
           },
         })
       );

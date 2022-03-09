@@ -41,8 +41,15 @@ import JobConfirmationScreen from "../screens/JobConfirmationScreen";
 import PickWorkerScreen from "../screens/PickWorkerScreen";
 import { useAuth } from "../state-store/auth-state";
 import { API } from "aws-amplify";
-import { onJobUpdated, onOfferCreated } from "../src/graphql/subscriptions";
-import { useDispatchOffer, useOffer } from "../state-store/offers-provider";
+import {
+  onJobToWorkerUpdated,
+  onOfferCreated,
+} from "../src/graphql/subscriptions";
+import {
+  ActionType,
+  useDispatchOffer,
+  useOffer,
+} from "../state-store/offers-provider";
 
 export default function Navigation({
   colorScheme,
@@ -87,23 +94,24 @@ export default function Navigation({
         setShowAlert({ newOffer: true, jobAccepted: false });
 
         dispatchCurrentOffers({
-          type: "update",
+          type: ActionType.ADD_TO_NEARBY_JOBS,
           payload: {
             ...currentOffers,
-            offers: [...currentOffers.offers, value.data.onOfferCreated],
+            offers: [value.data.onOfferCreated, ...currentOffers.offers],
           },
         });
       },
+
       //@ts-ignore
       error: (error) => {
         console.warn(error);
       },
     });
 
-    const onJobAcceptedSub = API.graphql(
+    const onJobToWorkerUpdatedSub = API.graphql(
       // @ts-ignore
       {
-        query: onJobUpdated,
+        query: onJobToWorkerUpdated,
         variables: {
           customerId: user.id,
         },
@@ -112,6 +120,8 @@ export default function Navigation({
     ).subscribe({
       // @ts-ignore
       next: ({ _, value }) => {
+        console.log("updated job", value);
+
         setShowAlert({ newOffer: false, jobAccepted: true });
       },
       //@ts-ignore
@@ -122,7 +132,7 @@ export default function Navigation({
 
     return () => {
       onOfferCreatedSub.unsubscribe();
-      onJobAcceptedSub.unsubscribe();
+      onJobToWorkerUpdatedSub.unsubscribe();
     };
   }, [user]);
 

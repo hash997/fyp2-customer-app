@@ -3,7 +3,11 @@ import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { dayToString, formatAMPM, monthToString } from "../../helpers/time";
 import { AppointmentStatus, Offer, OfferStatus } from "../../src/API";
-import { createAppointment, updateOffer } from "../../src/graphql/mutations";
+import {
+  createAppointment,
+  updateJobRequest,
+  updateOffer,
+} from "../../src/graphql/mutations";
 import { useAuth } from "../../state-store/auth-state";
 
 const OfferCard = ({ offer }: { offer: Offer }) => {
@@ -16,6 +20,16 @@ const OfferCard = ({ offer }: { offer: Offer }) => {
   const handleAcceptOffer = async () => {
     if (!user || !offer.id) return;
     try {
+      const updateJobReqRes = await API.graphql({
+        query: updateJobRequest,
+        variables: {
+          updateJobRequestInput: {
+            id: offer.jobRequest.id,
+            status: OfferStatus.ACCEPTED,
+          },
+        },
+      });
+
       const updateOfferRes = await API.graphql({
         query: updateOffer,
         variables: {
@@ -37,7 +51,9 @@ const OfferCard = ({ offer }: { offer: Offer }) => {
           },
         },
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log("error ->", error);
+    }
   };
   return (
     <View
@@ -82,9 +98,8 @@ const OfferCard = ({ offer }: { offer: Offer }) => {
               color: "#0C4160",
             }}
           >
-            {/* at {formatAMPM(new Date(offer?.suggestedTime))} */}
-            {dayToString(new Date(offer.suggestedTime).getDay())}{" "}
-            {formatAMPM(new Date(offer.suggestedTime))}
+            {dayToString(new Date(offer?.jobRequest?.preferedTime).getDay())}{" "}
+            {formatAMPM(new Date(offer?.jobRequest?.preferedTime))}
           </Text>
           <Text
             style={{
@@ -95,8 +110,10 @@ const OfferCard = ({ offer }: { offer: Offer }) => {
             }}
           >
             {/* at {formatAMPM(new Date(offer?.suggestedTime))} */}
-            {monthToString(new Date(offer.suggestedTime).getMonth())}{" "}
-            {new Date(offer.suggestedTime).getDate()}
+            {monthToString(
+              new Date(offer?.jobRequest.preferedTime).getMonth()
+            )}{" "}
+            {new Date(offer?.jobRequest?.preferedTime).getDate()}
           </Text>
         </View>
       </View>

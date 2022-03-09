@@ -96,6 +96,8 @@ export const createJobRequest = /* GraphQL */ `
       status
       totalCost
       title
+      isUrgent
+      preferedTime
     }
   }
 `;
@@ -123,6 +125,7 @@ export const createJobRequestToWorker = /* GraphQL */ `
       status
       title
       description
+      time
     }
   }
 `;
@@ -238,6 +241,8 @@ export const updateJobRequest = /* GraphQL */ `
     updateJobRequest(updateJobRequestInput: $updateJobRequestInput) {
       id
       customerId
+      preferedTime
+      isUrgent
       location {
         id
         customerId

@@ -4,8 +4,9 @@ import { API } from "aws-amplify";
 import { StyleSheet, Text, View } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
+import { JobRequestToWorker } from "../../src/API";
 
-const JobRequest = ({ jobReq }: { jobReq: any }) => {
+const JobToWorker = ({ jobReq }: { jobReq: JobRequestToWorker }) => {
   return (
     <>
       <View
@@ -24,7 +25,7 @@ const JobRequest = ({ jobReq }: { jobReq: any }) => {
             <Text style={{ fontWeight: "700", fontSize: 16, color: "#0C4160" }}>
               {jobReq?.title}
             </Text>
-            <View
+            {/* <View
               style={{
                 display: "flex",
                 flexDirection: "row",
@@ -42,7 +43,7 @@ const JobRequest = ({ jobReq }: { jobReq: any }) => {
                   ? `${jobReq?.offers.length} Offers`
                   : `${jobReq?.offers.length} offer`}{" "}
               </Text>
-            </View>
+            </View> */}
           </View>
           <View
             style={{
@@ -69,4 +70,4 @@ const JobRequest = ({ jobReq }: { jobReq: any }) => {
   );
 };
 
-export default JobRequest;
+export default JobToWorker;

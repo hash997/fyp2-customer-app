@@ -20,41 +20,31 @@ export const onOfferCreated = /* GraphQL */ `
         status
         title
         totalCost
+        preferedTime
       }
     }
   }
 `;
 
-export const onJobUpdated = /* GraphQL */ `
-  subscription onJobUpdated($customerId: ID!) {
-    onJobUpdated(customerId: $customerId) {
+export const onJobToWorkerUpdated = /* GraphQL */ `
+  subscription onJobToWorkerUpdated($customerId: ID!) {
+    onJobToWorkerUpdated(customerId: $customerId) {
       id
       customerId
-      location {
-        id
-        customerId
-        lng
-        lat
-        state
-        city
-        address
-      }
-      city
+      workerId
+      # location {
+      #   id
+      #   customerId
+      #   lng
+      #   lat
+      #   state
+      #   city
+      #   address
+      # }
+      # city
       status
       title
       description
-      totalCost
-      offers {
-        id
-        customerId
-        workerId
-        jobId
-        price
-        sentAt
-        status
-      }
-      sentAt
-      completedAt
     }
   }
 `;
