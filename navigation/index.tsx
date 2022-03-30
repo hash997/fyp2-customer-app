@@ -94,10 +94,10 @@ export default function Navigation({
         setShowAlert({ newOffer: true, jobAccepted: false });
 
         dispatchCurrentOffers({
-          type: ActionType.ADD_TO_NEARBY_JOBS,
+          type: ActionType.ADD_TO_NEW_OFFER,
           payload: {
             ...currentOffers,
-            offers: [value.data.onOfferCreated, ...currentOffers.offers],
+            offers: [...currentOffers.offers, value.data.onOfferCreated],
           },
         });
       },
@@ -136,7 +136,9 @@ export default function Navigation({
     };
   }, [user]);
 
-  useEffect(() => {}, [currentOffers]);
+  useEffect(() => {
+    console.log("current offers", currentOffers);
+  }, [currentOffers]);
 
   return (
     <NavigationContainer

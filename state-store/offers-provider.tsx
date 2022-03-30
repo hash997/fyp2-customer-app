@@ -18,7 +18,7 @@ interface Action {
 }
 
 export enum ActionType {
-  ADD_TO_NEARBY_JOBS = "ADD_TO_NEARBY_JOBS",
+  ADD_TO_NEW_OFFER = "ADD_TO_NEW_OFFER",
   CLEAR = "CLEAR",
 }
 
@@ -29,13 +29,14 @@ const OfferDispatchContext = createContext<Dispatch<Action>>(
 
 const reducer = (currentOffer: OffersState, action: Action) => {
   switch (action.type) {
-    case ActionType.ADD_TO_NEARBY_JOBS:
+    case ActionType.ADD_TO_NEW_OFFER:
       if (!action.payload) throw new Error("payload is empty");
-      // return (currentOffer = action.payload);
+
       return { ...currentOffer, offers: action.payload?.offers };
 
     case ActionType.CLEAR:
       return (currentOffer = initialState);
+
     default:
       throw new Error(`Unknown action: ${action.type}`);
   }
@@ -56,7 +57,7 @@ export const OfferProvider: React.FC = ({ children }) => {
       });
 
       dispatch({
-        type: ActionType.ADD_TO_NEARBY_JOBS,
+        type: ActionType.ADD_TO_NEW_OFFER,
         payload: {
           ...currentOffer,
           offers: offersRes.data.offersByCustomerId,

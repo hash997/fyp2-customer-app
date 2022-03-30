@@ -128,7 +128,9 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
       );
       const data = await res.json();
       getAddressCityCountry(data);
-    } catch (error) {}
+    } catch (error) {
+      // HANDLE ERRORS
+    }
   };
 
   const getAddressCityCountry = (jsonRes: any) => {
@@ -275,12 +277,7 @@ const PickLoc = ({ navigation }: RootTabScreenProps<"PickLocation">) => {
               style={styles.btn}
             >
               <Text style={styles.btntxt}>use current location</Text>
-              <FontAwesome
-                name="location-arrow"
-                size={18}
-                color="white"
-                // style={{ marginLeft: 10 }}
-              />
+              <FontAwesome name="location-arrow" size={18} color="white" />
             </TouchableOpacity>
           </View>
 
