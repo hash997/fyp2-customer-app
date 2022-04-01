@@ -116,6 +116,7 @@ const SignUp = ({ navigation }: RootStackScreenProps<"SignUp">) => {
       setIsConfirmationCode(true);
     } catch (error) {
       setError(true);
+      Auth.signOut();
       console.log("shit went south creating credentials for user", error);
     }
   };
@@ -127,6 +128,7 @@ const SignUp = ({ navigation }: RootStackScreenProps<"SignUp">) => {
     } catch (error) {
       setError(true);
       console.log("errrorrrrrr =< ", error);
+      Auth.signOut();
 
       return error;
     }
